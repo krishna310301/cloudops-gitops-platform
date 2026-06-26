@@ -1,0 +1,91 @@
+name: Build and Push Demo App
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - app/**
+      - .github/workflows/build-and-push.yml
+  pull_request:
+    paths:
+      - app/**
+      - charts/**
+      - environments/**
+      - platform/**
+      - argocd/**
+      - .github/workflows/build-and-push.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  IMAGE_NAME: cloudops-demo-app
+
+jobs:
+  validate:
+    name: Validate app and manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run app tests
+        working-directory: app
+        run: python -m unittest discover -s tests -v
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+
+      - name: Helm lint
+        run: |
+          helm lint charts/cloudops-demo-app -f environments/dev/values.yaml
+          helm lint charts/cloudops-demo-app -f environments/staging/values.yaml
+          helm lint charts/cloudops-demo-app -f environments/prod/values.yaml
+
+      - name: Render Helm templates
+        run: ./scripts/render-helm.sh
+
+  build:
+    name: Build container image
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.event_name != 'pull_request'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        if: vars.AWS_REGION != '' && vars.AWS_ROLE_TO_ASSUME != ''
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+
+      - name: Log in to Amazon ECR
+        if: vars.ECR_REGISTRY != ''
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build image
+        working-directory: app
+        run: |
+          IMAGE_TAG="${GITHUB_SHA::12}"
+          docker build -t "$IMAGE_NAME:$IMAGE_TAG" .
+          echo "IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_ENV"
+
+      - name: Push image to ECR when configured
+        if: vars.ECR_REGISTRY != '' && vars.ECR_REPOSITORY != ''
+        run: |
+          docker tag "$IMAGE_NAME:$IMAGE_TAG" "${{ vars.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:$IMAGE_TAG"
+          docker push "${{ vars.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:$IMAGE_TAG"
+
+      - name: Report local image tag
+        run: |
+          echo "Built image tag: $IMAGE_TAG"

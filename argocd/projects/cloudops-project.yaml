@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cloudops-gitops-platform
+  namespace: argocd
+spec:
+  description: GitOps delivery project for CloudOps dev, staging, and prod namespaces
+  sourceRepos:
+    - REPO_URL_PLACEHOLDER
+  destinations:
+    - namespace: cloudops-dev
+      server: https://kubernetes.default.svc
+    - namespace: cloudops-staging
+      server: https://kubernetes.default.svc
+    - namespace: cloudops-prod
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist: []
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Service
+    - group: ""
+      kind: ServiceAccount
+    - group: apps
+      kind: Deployment
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+  roles:
+    - name: environment-reader
+      description: Read-only access to CloudOps GitOps applications
+      policies:
+        - p, proj:cloudops-gitops-platform:environment-reader, applications, get, cloudops-gitops-platform/*, allow

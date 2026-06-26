@@ -1,0 +1,23 @@
+.DS_Store
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+*.zip
+
+# Local build output
+dist/
+build/
+tmp/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# Local Kubernetes and Argo CD scratch files
+argocd-password.txt
+kubeconfig*
+.kubeconfig

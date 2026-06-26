@@ -1,0 +1,67 @@
+name: Promote Image Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_environment:
+        description: Environment to promote into
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      image_tag:
+        description: Immutable image tag to promote
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  promote:
+    name: Open promotion pull request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update target environment image tag
+        run: |
+          values_file="environments/${{ inputs.target_environment }}/values.yaml"
+          python - "$values_file" "${{ inputs.image_tag }}" <<'PY'
+          import pathlib
+          import re
+          import sys
+
+          path = pathlib.Path(sys.argv[1])
+          tag = sys.argv[2]
+          text = path.read_text()
+          updated = re.sub(r'(?m)^  tag: ".+"$', f'  tag: "{tag}"', text, count=1)
+          if updated == text:
+              raise SystemExit(f"image tag not updated in {path}")
+          path.write_text(updated)
+          PY
+
+      - name: Create promotion branch
+        run: |
+          branch="promotion/${{ inputs.target_environment }}/${{ inputs.image_tag }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add "environments/${{ inputs.target_environment }}/values.yaml"
+          git commit -m "Promote ${{ inputs.image_tag }} to ${{ inputs.target_environment }}"
+          git push --set-upstream origin "$branch"
+          echo "BRANCH=$branch" >> "$GITHUB_ENV"
+
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "Promote ${{ inputs.image_tag }} to ${{ inputs.target_environment }}" \
+            --body "Promotes image tag \`${{ inputs.image_tag }}\` into \`${{ inputs.target_environment }}\` by updating environment-specific Helm values."

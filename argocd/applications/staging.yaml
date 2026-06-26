@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudops-demo-staging
+  namespace: argocd
+  labels:
+    cloudops.io/environment: staging
+spec:
+  project: cloudops-gitops-platform
+  sources:
+    - repoURL: REPO_URL_PLACEHOLDER
+      targetRevision: HEAD
+      path: charts/cloudops-demo-app
+      helm:
+        releaseName: cloudops-demo-staging
+        valueFiles:
+          - $values/environments/staging/values.yaml
+    - repoURL: REPO_URL_PLACEHOLDER
+      targetRevision: HEAD
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cloudops-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - PruneLast=true
+      - ApplyOutOfSyncOnly=true

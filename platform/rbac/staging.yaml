@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cloudops-staging-deployer
+  namespace: cloudops-staging
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cloudops-staging-deployer
+  namespace: cloudops-staging
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps", "events", "pods", "pods/log", "services"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cloudops-staging-deployer
+  namespace: cloudops-staging
+subjects:
+  - kind: ServiceAccount
+    name: cloudops-staging-deployer
+    namespace: cloudops-staging
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cloudops-staging-deployer
