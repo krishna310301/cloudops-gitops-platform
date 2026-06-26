@@ -9,7 +9,7 @@ environment:
   name: staging
 
 failureMode:
-  enabled: true
+  enabled: false
 
 resources:
   requests:
