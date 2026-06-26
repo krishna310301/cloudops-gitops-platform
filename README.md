@@ -1,5 +1,8 @@
 # CloudOps GitOps Platform
 
+[![Build and Push Demo App](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/build-and-push.yml)
+[![Terraform Validate](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/terraform-validate.yml/badge.svg)](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/terraform-validate.yml)
+
 CloudOps GitOps Platform is a Kubernetes delivery platform that demonstrates Git-based environment promotion, Argo CD sync control, namespace-isolated environments, drift correction, rollback recovery, and an AWS EKS/ECR deployment path.
 
 This project is intentionally different from an application deployment project. The app is small on purpose. The platform behavior is the point: Git defines desired state, Argo CD reconciles the cluster to that state, and environment changes move through reviewable Git updates.
@@ -15,6 +18,28 @@ This project is intentionally different from an application deployment project. 
 - Drift detection and self-healing after manual cluster changes
 - Failed deployment recovery through Git rollback
 - Terraform-provisioned AWS foundation for EKS, ECR, IAM, and VPC networking
+
+## Project Status
+
+Working project components:
+
+- Demo app with version and health endpoints
+- Helm chart with probes, resource requests, resource limits, and security context
+- Argo CD AppProject and multi-source Applications
+- Namespace-scoped `dev`, `staging`, and `prod` environments
+- ResourceQuotas, Roles, RoleBindings, and ServiceAccounts per environment
+- GitHub Actions workflow for app tests, Helm rendering, Argo CD manifest rendering, image build, and optional ECR push
+- GitHub Actions workflow for PR-style image tag promotion
+- Terraform modules and environment roots for VPC, EKS, ECR, and IAM
+- Local validation path using kind or minikube image loading
+- AWS validation path using EKS, ECR, Argo CD, Helm, and GitHub as the source of truth
+
+Completed validation scenarios:
+
+- Argo CD sync of all three environments
+- Drift detection and self-healing after a manual replica change
+- Failed deployment recovery through Git revert
+- EKS/ECR deployment validation with screenshots and command evidence
 
 ## Architecture
 
@@ -54,6 +79,8 @@ The local validation path checks the GitOps mechanics using `kind` or `minikube`
 The Terraform directory defines and provisions the AWS foundation for the EKS deployment. The applied model uses one EKS cluster and keeps `dev`, `staging`, and `prod` isolated as Kubernetes namespaces.
 
 AWS deployment path and permission preflight: [docs/aws-deployment.md](docs/aws-deployment.md)
+
+Cost control and cleanup notes: [docs/cost-control.md](docs/cost-control.md)
 
 ## Repository Structure
 
@@ -174,3 +201,24 @@ AWS deployment completed for the validation environment:
 - Argo CD on EKS synced from the public GitHub repository
 - Drift and rollback scenarios were re-run on EKS
 - Final Argo CD, Kubernetes, ECR, and AWS evidence screenshots were captured
+
+The AWS path uses cost-bearing resources. Keep the environment running only while it is needed for validation, and destroy it through Terraform when finished:
+
+```bash
+terraform -chdir=terraform/envs/dev destroy
+```
+
+## Documentation
+
+- [Architecture](docs/architecture.md)
+- [AWS Deployment](docs/aws-deployment.md)
+- [AWS Validation Results](docs/aws-validation-results.md)
+- [Cost Control](docs/cost-control.md)
+- [Drift Detection Demo](docs/drift-detection-demo.md)
+- [Engineering Notes](docs/engineering-notes.md)
+- [First Argo CD Sync Test](docs/first-argocd-sync-test.md)
+- [Local Validation Results](docs/local-validation-results.md)
+- [Promotion Workflow](docs/promotion-workflow.md)
+- [RBAC And Resource Boundaries](docs/rbac-and-resource-boundaries.md)
+- [Rollback Demo](docs/rollback-demo.md)
+- [Screenshot Evidence](docs/screenshots/README.md)
