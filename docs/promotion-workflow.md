@@ -35,13 +35,13 @@ Do not claim automated production deployment with enforced branch protection unl
 
 Terraform in this repo is a phase-2 scaffold for the AWS implementation. It should not block the local GitOps proof.
 
-Weekend scope:
+Local proof scope:
 
 - Keep module directories and variables clear.
 - Include realistic resource boundaries.
 - Avoid spending time debugging AWS provisioning.
 
-Post-exam scope:
+AWS deployment scope:
 
 - Complete Terraform resources.
 - Run `terraform plan` and `terraform apply`.

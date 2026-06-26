@@ -38,7 +38,7 @@ More detail: [docs/architecture.md](docs/architecture.md)
 
 ## Local-First Scope
 
-The weekend build proves the GitOps mechanics locally using `kind` or `minikube`:
+The local proof validates the GitOps mechanics using `kind` or `minikube`:
 
 1. Install Argo CD.
 2. Apply namespaces, ResourceQuotas, and RBAC.
@@ -154,9 +154,9 @@ Run demos:
 ./scripts/demo-rollback.sh staging
 ```
 
-## Next AWS Phase
+## AWS Deployment Roadmap
 
-After the AWS Solutions Architect exam, the planned AWS phase is:
+Planned AWS hardening and deployment work:
 
 - Complete Terraform modules for VPC, EKS, ECR, and IAM
 - Push app image to Amazon ECR

@@ -2,13 +2,13 @@
 
 This directory is a phase-2 scaffold for the AWS implementation of CloudOps GitOps Platform.
 
-Weekend boundary:
+Local proof boundary:
 
 - Keep the module contracts clear.
 - Validate Terraform syntax.
 - Do not spend local GitOps build time debugging AWS provisioning.
 
-Post-exam AWS phase:
+AWS deployment phase:
 
 - Complete resources for VPC, EKS, ECR, and IAM.
 - Run `terraform plan` with reviewed variables.
