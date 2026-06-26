@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: cloudops-demo-app
+  repository: 196750375574.dkr.ecr.us-east-2.amazonaws.com/cloudops-gitops-dev-demo-app
   tag: "0.1.0-dev"
   pullPolicy: IfNotPresent
 
