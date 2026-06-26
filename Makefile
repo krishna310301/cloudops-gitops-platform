@@ -3,7 +3,7 @@ SHELL := /usr/bin/env bash
 CLUSTER_NAME ?= cloudops-gitops
 GIT_REPO_URL ?= git://host.docker.internal:9418/cloudops-gitops-platform
 
-.PHONY: test lint render validate build-images load-images install-argocd bootstrap-project bootstrap-dev bootstrap-all
+.PHONY: test lint render validate aws-preflight build-images load-images install-argocd bootstrap-project bootstrap-dev bootstrap-all
 
 test:
 	python3 -m unittest discover -s app/tests -v
@@ -20,6 +20,9 @@ render:
 validate: test lint render
 	bash -n scripts/*.sh
 	terraform -chdir=terraform fmt -check -recursive
+
+aws-preflight:
+	./scripts/aws-preflight.sh
 
 build-images:
 	docker build -t cloudops-demo-app:0.1.0-dev ./app

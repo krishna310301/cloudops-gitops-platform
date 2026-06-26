@@ -48,6 +48,8 @@ The local proof validates the GitOps mechanics using `kind` or `minikube`:
 
 The Terraform directory defines the AWS foundation for the EKS deployment phase. The portfolio AWS demo applies one EKS cluster and keeps `dev`, `staging`, and `prod` isolated as Kubernetes namespaces.
 
+AWS deployment path and permission preflight: [docs/aws-deployment.md](docs/aws-deployment.md)
+
 ## Repository Structure
 
 ```text
@@ -156,8 +158,10 @@ Run demos:
 
 ## AWS Deployment Roadmap
 
-Planned AWS hardening and deployment work:
+AWS deployment path:
 
+- Run the AWS permission preflight before creating resources
+- Apply the dev Terraform root for VPC, EKS, ECR, and IAM
 - Push app image to Amazon ECR
 - Connect Argo CD to the public GitHub repository
 - Re-run the drift and rollback demos on EKS

@@ -16,6 +16,16 @@ This stack creates cost-bearing AWS resources, including EKS and EC2 worker node
 terraform -chdir=terraform/envs/dev destroy
 ```
 
+## Permission Preflight
+
+Run the AWS permission preflight before applying the dev root:
+
+```bash
+AWS_REGION=us-east-2 ./scripts/aws-preflight.sh
+```
+
+The apply identity needs permissions to create VPC networking, IAM roles/policies, an EKS cluster, a managed node group, an ECR repository, and to push images to ECR. The full deployment sequence is documented in [../docs/aws-deployment.md](../docs/aws-deployment.md).
+
 ## Intended Modules
 
 - `modules/vpc`: VPC, public subnets, internet gateway, route table, EKS discovery tags
