@@ -65,7 +65,7 @@ The Terraform directory is a phase-2 AWS scaffold. It defines the intended VPC, 
 
 ## Demo Evidence Targets
 
-The project is considered locally complete when these artifacts can be captured:
+The local proof is complete. Evidence artifacts are captured under [docs/screenshots](docs/screenshots).
 
 - Argo CD showing `cloudops-demo-dev`, `cloudops-demo-staging`, and `cloudops-demo-prod` as Synced and Healthy
 - Manual replica drift detected as OutOfSync and reconciled back to Git state
@@ -75,6 +75,20 @@ The project is considered locally complete when these artifacts can be captured:
 - Argo CD Applications resolving `$values/environments/.../values.yaml` successfully
 
 Screenshot placeholders live in [docs/screenshots/README.md](docs/screenshots/README.md).
+
+Detailed validation results: [docs/local-validation-results.md](docs/local-validation-results.md)
+
+Interview guide and claim boundaries: [docs/interview-guide.md](docs/interview-guide.md)
+
+## Screenshot Gallery
+
+![Argo CD three apps synced](docs/screenshots/argocd-three-apps-synced.png)
+
+![Drift before self-heal](docs/screenshots/drift-before-outofsync.png)
+
+![Failed deployment degraded](docs/screenshots/failed-deploy-degraded.png)
+
+![Rollback recovered](docs/screenshots/rollback-recovered.png)
 
 ## Promotion Model
 
@@ -98,6 +112,18 @@ Render all Helm manifests locally:
 
 ```bash
 ./scripts/render-helm.sh
+```
+
+Validate local files:
+
+```bash
+make validate
+```
+
+Build and load local kind images:
+
+```bash
+./scripts/build-load-local-images.sh
 ```
 
 Bootstrap a local cluster after creating one with `kind` or `minikube`:

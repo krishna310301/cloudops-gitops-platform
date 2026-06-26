@@ -1,6 +1,6 @@
-# Screenshot Checklist
+# Screenshot Evidence
 
-Capture these after the local proof works:
+Captured evidence:
 
 1. `argocd-three-apps-synced.png`
    - Argo CD showing dev, staging, and prod Applications as Synced and Healthy.
@@ -22,3 +22,8 @@ Capture these after the local proof works:
 
 7. `argocd-values-source.png`
    - Argo CD successfully resolving `$values/environments/.../values.yaml` for at least one Application.
+
+Additional evidence:
+
+- `failed-deploy-terminal-evidence.png`
+- `rollback-terminal-evidence.png`

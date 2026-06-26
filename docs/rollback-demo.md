@@ -11,6 +11,8 @@ Use one of these failure modes:
 
 The readiness failure path is better for local demos because it does not depend on registry access.
 
+The Helm chart sets `progressDeadlineSeconds` so readiness failures move to a Degraded state quickly during the demo.
+
 ## Demo Steps
 
 Run:

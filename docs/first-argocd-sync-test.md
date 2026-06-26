@@ -38,12 +38,7 @@ The project currently needs to be served as its own repository root because the 
 For a `kind` demo, build and load the local image before syncing:
 
 ```bash
-docker build -t cloudops-demo-app:0.1.0-dev ./app
-docker build -t cloudops-demo-app:0.1.0-staging ./app
-docker build -t cloudops-demo-app:0.1.0-prod ./app
-kind load docker-image cloudops-demo-app:0.1.0-dev --name cloudops-gitops
-kind load docker-image cloudops-demo-app:0.1.0-staging --name cloudops-gitops
-kind load docker-image cloudops-demo-app:0.1.0-prod --name cloudops-gitops
+./scripts/build-load-local-images.sh
 ```
 
 In terminal 1:
