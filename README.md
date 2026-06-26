@@ -1,6 +1,6 @@
 # CloudOps GitOps Platform
 
-CloudOps GitOps Platform is a production-style Kubernetes delivery platform that demonstrates Git-based environment promotion, Argo CD sync control, namespace-isolated environments, drift correction, and rollback recovery.
+CloudOps GitOps Platform is a production-style Kubernetes delivery platform that demonstrates Git-based environment promotion, Argo CD sync control, namespace-isolated environments, drift correction, rollback recovery, and an AWS EKS/ECR deployment path.
 
 This project is intentionally different from an application deployment project. The app is small on purpose. The platform behavior is the point: Git defines desired state, Argo CD reconciles the cluster to that state, and environment changes move through reviewable Git updates.
 
@@ -14,7 +14,7 @@ This project is intentionally different from an application deployment project. 
 - PR-style promotion workflow from `dev` to `staging` to `prod`
 - Drift detection and self-healing after manual cluster changes
 - Failed deployment recovery through Git rollback
-- Terraform-defined AWS foundation for EKS, ECR, IAM, and VPC networking
+- Terraform-provisioned AWS foundation for EKS, ECR, IAM, and VPC networking
 
 ## Architecture
 
@@ -46,7 +46,7 @@ The local proof validates the GitOps mechanics using `kind` or `minikube`:
 4. Promote app versions through Git changes.
 5. Demonstrate drift correction and rollback recovery.
 
-The Terraform directory defines the AWS foundation for the EKS deployment phase. The portfolio AWS demo applies one EKS cluster and keeps `dev`, `staging`, and `prod` isolated as Kubernetes namespaces.
+The Terraform directory defines and provisions the AWS foundation for the EKS deployment phase. The portfolio AWS demo applies one EKS cluster and keeps `dev`, `staging`, and `prod` isolated as Kubernetes namespaces.
 
 AWS deployment path and permission preflight: [docs/aws-deployment.md](docs/aws-deployment.md)
 
@@ -80,6 +80,8 @@ Screenshot evidence is documented in [docs/screenshots/README.md](docs/screensho
 
 Detailed validation results: [docs/local-validation-results.md](docs/local-validation-results.md)
 
+AWS validation results: [docs/aws-validation-results.md](docs/aws-validation-results.md)
+
 Interview guide and claim boundaries: [docs/interview-guide.md](docs/interview-guide.md)
 
 ## Screenshot Gallery
@@ -91,6 +93,8 @@ Interview guide and claim boundaries: [docs/interview-guide.md](docs/interview-g
 ![Failed deployment degraded](docs/screenshots/failed-deploy-degraded.png)
 
 ![Rollback recovered](docs/screenshots/rollback-recovered.png)
+
+![AWS Argo CD apps synced](docs/screenshots/aws-argocd-three-apps-synced.png)
 
 ## Promotion Model
 
@@ -156,13 +160,12 @@ Run demos:
 ./scripts/demo-rollback.sh staging
 ```
 
-## AWS Deployment Roadmap
+## AWS Deployment Evidence
 
-AWS deployment path:
+AWS deployment completed for the portfolio environment:
 
-- Run the AWS permission preflight before creating resources
-- Apply the dev Terraform root for VPC, EKS, ECR, and IAM
-- Push app image to Amazon ECR
-- Connect Argo CD to the public GitHub repository
-- Re-run the drift and rollback demos on EKS
-- Capture final Argo CD, Kubernetes, and AWS screenshots
+- Terraform applied the dev AWS root for VPC, EKS, ECR, and IAM
+- App images were pushed to Amazon ECR with `0.1.0-dev`, `0.1.0-staging`, and `0.1.0-prod` tags
+- Argo CD on EKS synced from the public GitHub repository
+- Drift and rollback demos were re-run on EKS
+- Final Argo CD, Kubernetes, ECR, and AWS evidence screenshots were captured

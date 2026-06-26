@@ -13,6 +13,7 @@ The project proves:
 - Environment promotion is a Git change to Helm values.
 - Manual cluster drift is detected and corrected.
 - A failed deployment can be recovered through Git rollback.
+- The same workflow can run on AWS EKS with images pulled from Amazon ECR.
 
 ## Accurate Claims
 
@@ -27,6 +28,10 @@ Safe:
 Safe:
 
 > Demonstrated rollback by committing a failed staging configuration and recovering through a Git revert.
+
+Safe:
+
+> Provisioned a portfolio AWS foundation using Terraform for VPC, EKS, ECR, and IAM, then deployed the Argo CD GitOps workflow to EKS.
 
 Avoid:
 
@@ -85,6 +90,6 @@ This is not the same as separate AWS account or cluster isolation.
 
 Use only after the repo and screenshots are published:
 
-- Built a GitOps delivery platform for Kubernetes using Argo CD, Helm, and GitHub Actions, implementing namespace-isolated dev/staging/prod workflows with Git-based promotion and environment-specific Helm values.
-- Demonstrated Argo CD drift correction by manually changing live replica state and validating automated self-healing back to the Git-defined desired state.
+- Built a GitOps delivery platform on Amazon EKS using Argo CD, Helm, Terraform, ECR, and GitHub Actions, implementing namespace-isolated dev/staging/prod workflows with Git-based promotion and environment-specific Helm values.
+- Demonstrated Argo CD drift correction by manually changing live replica state on EKS and validating automated self-healing back to the Git-defined desired state.
 - Validated failed-deployment recovery by committing a bad staging readiness configuration, observing Argo CD Degraded health, and restoring service through a Git revert rollback.

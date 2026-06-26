@@ -47,16 +47,16 @@ ECR_REGISTRY="${ECR_REPO%/*}"
 aws ecr get-login-password --region "$AWS_REGION" \
   | docker login --username AWS --password-stdin "$ECR_REGISTRY"
 
-docker build -t cloudops-demo-app:0.1.0-dev ./app
-docker tag cloudops-demo-app:0.1.0-dev "$ECR_REPO:0.1.0-dev"
-docker tag cloudops-demo-app:0.1.0-dev "$ECR_REPO:0.1.0-staging"
-docker tag cloudops-demo-app:0.1.0-dev "$ECR_REPO:0.1.0-prod"
-docker push "$ECR_REPO:0.1.0-dev"
-docker push "$ECR_REPO:0.1.0-staging"
-docker push "$ECR_REPO:0.1.0-prod"
+docker buildx build --platform linux/amd64 \
+  -t "$ECR_REPO:0.1.0-dev" \
+  -t "$ECR_REPO:0.1.0-staging" \
+  -t "$ECR_REPO:0.1.0-prod" \
+  --push ./app
 ```
 
 After the images exist in ECR, update `environments/*/values.yaml` to use the ECR repository URL, commit, and push to GitHub.
+
+The explicit `linux/amd64` platform matters when building locally on Apple Silicon for AMD64 EKS nodes.
 
 ## Connect Argo CD on EKS
 
@@ -74,9 +74,7 @@ GIT_REPO_URL=https://github.com/krishna310301/cloudops-gitops-platform.git \
 Then verify:
 
 ```bash
-argocd app get cloudops-demo-dev
-argocd app get cloudops-demo-staging
-argocd app get cloudops-demo-prod
+kubectl -n argocd get applications
 kubectl get pods -n cloudops-dev
 kubectl get pods -n cloudops-staging
 kubectl get pods -n cloudops-prod
@@ -84,12 +82,7 @@ kubectl get pods -n cloudops-prod
 
 ## Evidence to Capture
 
-- Terraform apply output showing the EKS cluster and ECR repository
-- ECR repository with pushed `0.1.0-*` image tags
-- EKS nodes ready
-- Argo CD showing all three apps Synced and Healthy against the GitHub repo
-- Drift demo on EKS: manual replica change, OutOfSync, then self-healed
-- Rollback demo on EKS: failed health check, Degraded, Git revert, Healthy
+Captured AWS evidence is recorded in [aws-validation-results.md](aws-validation-results.md) and [screenshots/README.md](screenshots/README.md).
 
 ## Destroy Boundary
 

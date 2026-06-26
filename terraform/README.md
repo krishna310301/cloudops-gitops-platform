@@ -42,3 +42,5 @@ Before apply:
 After successful apply and screenshots:
 
 > Provisioned an AWS foundation with VPC, EKS, ECR, and IAM using Terraform, then deployed the GitOps workflow to EKS.
+
+This has been validated for the `dev` Terraform root. The delivery environments are namespace-isolated inside one EKS cluster.
