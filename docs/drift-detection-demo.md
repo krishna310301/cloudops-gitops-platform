@@ -29,7 +29,7 @@ kubectl -n cloudops-dev get deployment cloudops-demo-dev
 
 Argo CD should detect that live state no longer matches Git. With self-heal enabled, it should reconcile the deployment back to the replica count declared in `environments/dev/values.yaml`.
 
-## Evidence To Capture
+## Output To Capture
 
 - Argo CD `cloudops-demo-dev` Application before drift: Synced and Healthy
 - Application after manual scale: OutOfSync

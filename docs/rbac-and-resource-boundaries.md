@@ -19,7 +19,7 @@ Without quotas, namespace isolation is mostly an organizational boundary. With q
 
 ## Why RBAC Matters
 
-The Role and RoleBinding create an access boundary for environment-scoped changes. This is intentionally minimal, but it follows a production operating principle: environments should not all share one broad access path.
+The Role and RoleBinding create an access boundary for environment-scoped changes. The setup stays small, but it follows a production operating principle: environments should not all share one broad access path.
 
 ## Argo CD Sync Identity Boundary
 

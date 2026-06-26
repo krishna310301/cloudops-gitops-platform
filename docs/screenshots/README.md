@@ -1,6 +1,6 @@
-# Screenshot Evidence
+# Validation Output
 
-Captured validation output:
+Local run:
 
 1. `argocd-three-apps-synced.png`
    - Argo CD showing dev, staging, and prod Applications as Synced and Healthy.
@@ -21,29 +21,29 @@ Captured validation output:
    - Namespaces, ResourceQuotas, and RBAC objects visible with `kubectl`.
 
 7. `argocd-values-source.png`
-   - Argo CD successfully resolving `$values/environments/.../values.yaml` for at least one Application.
+   - Argo CD resolving `$values/environments/.../values.yaml` for at least one Application.
 
-Additional validation output:
+Additional terminal output:
 
-- `failed-deploy-terminal-evidence.png`
-- `rollback-terminal-evidence.png`
+- `failed-deploy-terminal-output.png`
+- `rollback-terminal-output.png`
 
-AWS validation output:
+AWS run:
 
-1. `aws-terraform-eks-evidence.png`
+1. `aws-terraform-eks-validation.png`
    - Terraform outputs and live EKS cluster status.
 
-2. `aws-ecr-images-evidence.png`
+2. `aws-ecr-images-validation.png`
    - ECR repository and pushed `0.1.0-*` image tags.
 
 3. `aws-argocd-three-apps-synced.png`
    - Argo CD on EKS showing dev, staging, and prod as Synced and Healthy.
 
-4. `aws-eks-workloads-evidence.png`
+4. `aws-eks-workloads-validation.png`
    - EKS nodes, Argo CD Applications, and running pods across all three namespaces.
 
-5. `aws-namespace-boundaries-evidence.png`
-   - Namespace, ResourceQuota, ServiceAccount, Role, and RoleBinding evidence on EKS.
+5. `aws-namespace-boundaries-validation.png`
+   - Namespace, ResourceQuota, ServiceAccount, Role, and RoleBinding output on EKS.
 
 6. `aws-drift-before-outofsync.png`
    - EKS drift scenario showing manual scale to 3 replicas and Argo CD OutOfSync.
@@ -57,5 +57,5 @@ AWS validation output:
 9. `aws-rollback-recovered.png`
    - EKS rollback scenario after Git revert recovery.
 
-10. `aws-rollback-terminal-evidence.png`
+10. `aws-rollback-terminal-output.png`
     - Argo CD event history showing Degraded and recovered health transitions.

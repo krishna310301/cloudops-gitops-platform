@@ -1,6 +1,6 @@
 # Cost Control
 
-The AWS path is intended for short validation runs. Apply the stack when evidence needs to be captured, then destroy it when the validation window is complete.
+The AWS path is intended for short validation runs. Apply the stack when validation output needs to be captured, then destroy it when the validation window is complete.
 
 ## Cost-Bearing Resources
 
@@ -59,5 +59,5 @@ After destroy, verify that the following are gone or no longer running:
 - EKS cluster `cloudops-gitops-dev`
 - Managed node group `cloudops-gitops-dev-nodes`
 - EC2 worker nodes created by the node group
-- ECR repository and images, unless intentionally kept for follow-up validation
+- ECR repository and images, unless a follow-up validation run needs them
 - CloudWatch log groups created during validation

@@ -80,7 +80,7 @@ kubectl get pods -n cloudops-staging
 kubectl get pods -n cloudops-prod
 ```
 
-## Evidence to Capture
+## Output To Capture
 
 Captured AWS validation output is recorded in [aws-validation-results.md](aws-validation-results.md) and [screenshots/README.md](screenshots/README.md).
 

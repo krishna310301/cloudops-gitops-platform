@@ -1,16 +1,16 @@
 # Engineering Notes
 
-This document records implementation boundaries, design tradeoffs, and operational behavior for the GitOps workflow.
+These notes cover the boundaries, tradeoffs, and runtime behavior behind the GitOps workflow.
 
 ## Scope
 
-The repository implements one EKS-backed delivery platform with three namespace-scoped environments:
+The repo runs one EKS-backed delivery platform with three namespace-scoped environments:
 
 - `cloudops-dev`
 - `cloudops-staging`
 - `cloudops-prod`
 
-The environments share one cluster. Isolation is provided through namespaces, ResourceQuotas, Roles, RoleBindings, ServiceAccounts, separate Argo CD Applications, and separate Helm values.
+The environments share one cluster. Namespaces, ResourceQuotas, Roles, RoleBindings, ServiceAccounts, separate Argo CD Applications, and separate Helm values provide the separation.
 
 ## GitOps Contract
 
@@ -19,16 +19,16 @@ Git is the desired-state source for workload delivery.
 - Argo CD watches the repository.
 - Helm renders the application manifests.
 - Environment-specific values select replica counts, image tags, resource requests, limits, and failure-mode settings.
-- Promotion is represented as a Git change to the target environment values file.
-- Rollback is represented as a Git revert, keeping live state aligned with declared state.
+- Promotion changes the target environment values file in Git.
+- Rollback uses a Git revert so live state stays aligned with declared state.
 
 ## Argo CD Over Flux
 
-Flux would also be a valid controller for this workflow. Argo CD is used because it provides application-level health, sync status, history, AppProjects, and self-heal behavior through a clear API and UI.
+Flux would also work for this workflow. This repo uses Argo CD because it exposes application health, sync status, revision history, AppProjects, and self-heal behavior through a clear API and UI.
 
 ## Git Rollback Versus Argo CD UI Rollback
 
-This repository uses Git rollback for the validation scenario. Argo CD UI rollback can be useful during an incident, but if the repository still declares the failed state, reconciliation can move the cluster back toward that failed state. A Git revert updates the source of truth.
+This repo uses Git rollback for the validation scenario. Argo CD UI rollback can help during an incident, but the cluster can reconcile back to the failed state if Git still declares it. A Git revert changes the source of truth.
 
 ## RBAC Boundary
 
@@ -46,7 +46,7 @@ Possible hardening:
 
 ## Environment Isolation Boundary
 
-This project uses namespace isolation. It does not provide the same blast-radius reduction as separate AWS accounts or separate EKS clusters.
+This repo uses namespace isolation. Separate AWS accounts or separate EKS clusters would reduce blast radius further.
 
 Accurate language:
 

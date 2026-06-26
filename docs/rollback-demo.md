@@ -36,7 +36,7 @@ Manual equivalent:
 5. Revert the Git change.
 6. Let Argo CD sync the previous healthy desired state.
 
-## Evidence To Capture
+## Output To Capture
 
 - Argo CD `cloudops-demo-staging` before failure: Synced and Healthy
 - Failed rollout: Degraded

@@ -3,11 +3,11 @@
 [![Build and Push Demo App](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/build-and-push.yml)
 [![Terraform Validate](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/terraform-validate.yml/badge.svg)](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/terraform-validate.yml)
 
-CloudOps GitOps Platform is a Kubernetes delivery platform that demonstrates Git-based environment promotion, Argo CD sync control, namespace-isolated environments, drift correction, rollback recovery, and an AWS EKS/ECR deployment path.
+CloudOps GitOps Platform runs a GitOps delivery workflow on Kubernetes. It uses Argo CD, Helm, GitHub Actions, Terraform, ECR, and EKS to move a small app through `dev`, `staging`, and `prod` while Git stays the source of truth.
 
-This project is intentionally different from an application deployment project. The app is small on purpose. The platform behavior is the point: Git defines desired state, Argo CD reconciles the cluster to that state, and environment changes move through reviewable Git updates.
+The app stays small on purpose. The useful part is the delivery path around it: how a version reaches each environment, how Argo CD handles manual drift, and how a bad release gets recovered through Git.
 
-## What This Demonstrates
+## Platform Capabilities
 
 - GitOps delivery with Argo CD as the reconciliation controller
 - Namespace-isolated `dev`, `staging`, and `prod` environments
@@ -19,9 +19,9 @@ This project is intentionally different from an application deployment project. 
 - Failed deployment recovery through Git rollback
 - Terraform-provisioned AWS foundation for EKS, ECR, IAM, and VPC networking
 
-## Project Status
+## Current State
 
-Working project components:
+The repository includes:
 
 - Demo app with version and health endpoints
 - Helm chart with probes, resource requests, resource limits, and security context
@@ -34,12 +34,12 @@ Working project components:
 - Local validation path using kind or minikube image loading
 - AWS validation path using EKS, ECR, Argo CD, Helm, and GitHub as the source of truth
 
-Completed validation scenarios:
+Validated scenarios:
 
 - Argo CD sync of all three environments
 - Drift detection and self-healing after a manual replica change
 - Failed deployment recovery through Git revert
-- EKS/ECR deployment validation with screenshots and command evidence
+- EKS/ECR deployment validation with screenshots and terminal output
 
 ## Architecture
 
@@ -63,20 +63,20 @@ More detail: [docs/architecture.md](docs/architecture.md)
 
 ## Deployment Model
 
-The repository supports two deployment targets:
+The repo supports two deployment targets:
 
 - EKS deployment using the default `environments/{dev,staging,prod}` values, which point at ECR images.
 - Local validation using `VALUES_ROOT=environments/local`, which points at kind/minikube-loaded images.
 
-The local validation path checks the GitOps mechanics using `kind` or `minikube`:
+For local runs, `kind` or `minikube` can validate the GitOps loop before anything runs in AWS:
 
 1. Install Argo CD.
 2. Apply namespaces, ResourceQuotas, and RBAC.
 3. Sync three Argo CD Applications.
 4. Promote app versions through Git changes.
-5. Demonstrate drift correction and rollback recovery.
+5. Run the drift correction and rollback scenarios.
 
-The Terraform directory defines and provisions the AWS foundation for the EKS deployment. The applied model uses one EKS cluster and keeps `dev`, `staging`, and `prod` isolated as Kubernetes namespaces.
+Terraform provisions the AWS foundation for the EKS run. The applied model uses one EKS cluster and separates `dev`, `staging`, and `prod` with Kubernetes namespaces.
 
 AWS deployment path and permission preflight: [docs/aws-deployment.md](docs/aws-deployment.md)
 
@@ -97,18 +97,18 @@ Cost control and cleanup notes: [docs/cost-control.md](docs/cost-control.md)
 └── .github/workflows/           # CI and PR-style promotion workflows
 ```
 
-## Validation Evidence
+## Validation Output
 
-Validation artifacts are captured under [docs/screenshots](docs/screenshots).
+Screenshots and terminal captures live under [docs/screenshots](docs/screenshots).
 
 - Argo CD showing `cloudops-demo-dev`, `cloudops-demo-staging`, and `cloudops-demo-prod` as Synced and Healthy
 - Manual replica drift detected as OutOfSync and reconciled back to Git state
-- Bad image or broken readiness probe producing a Degraded application
+- Broken readiness probe producing a Degraded application
 - Git rollback restoring the last healthy version
 - Environment quotas and RBAC visible in Kubernetes
-- Argo CD Applications resolving `$values/environments/.../values.yaml` successfully
+- Argo CD Applications resolving `$values/environments/.../values.yaml`
 
-Screenshot evidence is documented in [docs/screenshots/README.md](docs/screenshots/README.md).
+The screenshot index is in [docs/screenshots/README.md](docs/screenshots/README.md).
 
 Detailed validation results: [docs/local-validation-results.md](docs/local-validation-results.md)
 
@@ -192,15 +192,15 @@ Run validation scenarios:
 ./scripts/demo-rollback.sh staging
 ```
 
-## AWS Deployment Evidence
+## AWS Run
 
-AWS deployment completed for the validation environment:
+The AWS run used one EKS cluster and the public GitHub repository:
 
 - Terraform applied the dev AWS root for VPC, EKS, ECR, and IAM
 - App images were pushed to Amazon ECR with `0.1.0-dev`, `0.1.0-staging`, and `0.1.0-prod` tags
 - Argo CD on EKS synced from the public GitHub repository
 - Drift and rollback scenarios were re-run on EKS
-- Final Argo CD, Kubernetes, ECR, and AWS evidence screenshots were captured
+- Argo CD, Kubernetes, ECR, and AWS screenshots were captured after the run
 
 The AWS path uses cost-bearing resources. Keep the environment running only while it is needed for validation, and destroy it through Terraform when finished:
 
@@ -221,4 +221,4 @@ terraform -chdir=terraform/envs/dev destroy
 - [Promotion Workflow](docs/promotion-workflow.md)
 - [RBAC And Resource Boundaries](docs/rbac-and-resource-boundaries.md)
 - [Rollback Demo](docs/rollback-demo.md)
-- [Screenshot Evidence](docs/screenshots/README.md)
+- [Validation Output](docs/screenshots/README.md)

@@ -1,6 +1,6 @@
 # Local Validation Results
 
-This document records the completed local validation for CloudOps GitOps Platform.
+Local validation ran against a kind cluster before the AWS run. The goal was to test the GitOps behavior first, without spending time or money on EKS while the manifests were still changing.
 
 Validation date: June 25, 2026 local time / June 26, 2026 UTC.
 
@@ -16,13 +16,13 @@ Validation date: June 25, 2026 local time / June 26, 2026 UTC.
 
 ### Three Applications Synced And Healthy
 
-Argo CD successfully synced three Applications:
+Argo CD synced three Applications:
 
 - `cloudops-demo-dev`
 - `cloudops-demo-staging`
 - `cloudops-demo-prod`
 
-Evidence:
+Output:
 
 ![Argo CD three apps synced](screenshots/argocd-three-apps-synced.png)
 
@@ -35,9 +35,9 @@ The `dev` Application uses Argo CD multi-source configuration:
 - values file at validation time: `$values/environments/dev/values.yaml`
 - current local re-run value file: `$values/environments/local/dev/values.yaml`
 
-The running app returned `environment=dev` and `image_tag=0.1.0-dev`, proving the environment values file was applied.
+The running app returned `environment=dev` and `image_tag=0.1.0-dev`, which confirmed that Argo CD read the environment values file.
 
-Evidence:
+Output:
 
 ![Argo CD values source](screenshots/argocd-values-source.png)
 
@@ -45,7 +45,7 @@ Evidence:
 
 The local cluster has separate namespaces, ResourceQuotas, Roles, RoleBindings, and ServiceAccounts for `dev`, `staging`, and `prod`.
 
-Evidence:
+Output:
 
 ![Namespace boundaries](screenshots/namespace-boundaries.png)
 
@@ -55,7 +55,7 @@ Manual drift was introduced by scaling `cloudops-demo-dev` from 1 replica to 3 r
 
 Argo CD detected the drift as `OutOfSync` and restored the deployment to the Git-defined replica count.
 
-Evidence:
+Output:
 
 ![Drift before self-heal](screenshots/drift-before-outofsync.png)
 
@@ -63,21 +63,21 @@ Evidence:
 
 ### Failed Deployment And Git Rollback
 
-A bad staging configuration enabled `failureMode=true`, causing the readiness probe to fail. Argo CD marked staging as `Degraded`.
+A bad staging configuration enabled `failureMode=true`. The readiness probe failed, and Argo CD marked staging as `Degraded`.
 
-Evidence:
+Output:
 
 ![Failed deployment degraded](screenshots/failed-deploy-degraded.png)
 
-![Failed deployment terminal evidence](screenshots/failed-deploy-terminal-evidence.png)
+![Failed deployment terminal output](screenshots/failed-deploy-terminal-output.png)
 
-Recovery happened through a Git revert commit, after which Argo CD restored staging to `Synced` and `Healthy`.
+A Git revert restored the previous desired state. Argo CD synced that revision and brought staging back to `Synced` and `Healthy`.
 
-Evidence:
+Output:
 
 ![Rollback recovered](screenshots/rollback-recovered.png)
 
-![Rollback terminal evidence](screenshots/rollback-terminal-evidence.png)
+![Rollback terminal output](screenshots/rollback-terminal-output.png)
 
 ## Commands Used For Final Checks
 
