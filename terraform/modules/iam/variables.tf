@@ -8,6 +8,11 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "ecr_repository_arn" {
+  description = "ECR repository ARN for deployment policy scoping."
+  type        = string
+}
+
 variable "tags" {
   description = "Common tags."
   type        = map(string)

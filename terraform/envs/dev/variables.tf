@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region for the environment."
   type        = string
-  default     = "us-east-1"
+  default     = "us-east-2"
 }
 
 variable "vpc_cidr_block" {
@@ -11,15 +11,16 @@ variable "vpc_cidr_block" {
 }
 
 variable "availability_zones" {
-  description = "Availability zones for the VPC scaffold."
+  description = "Availability zones for the VPC."
   type        = list(string)
-  default     = ["us-east-1a", "us-east-1b"]
+  default     = ["us-east-2a", "us-east-2b"]
 }
 
 variable "kubernetes_version" {
-  description = "EKS Kubernetes version."
+  description = "EKS Kubernetes version. Use null to let AWS select the current default."
   type        = string
-  default     = "1.30"
+  default     = null
+  nullable    = true
 }
 
 variable "github_repository" {

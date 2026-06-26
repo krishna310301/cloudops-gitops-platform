@@ -33,7 +33,7 @@ Do not claim automated production deployment with enforced branch protection unl
 
 ## Terraform Boundary
 
-Terraform in this repo is a phase-2 scaffold for the AWS implementation. It should not block the local GitOps proof.
+Terraform in this repo defines the AWS implementation. It is kept separate from the local proof so the GitOps workflow can be validated without provisioning cloud resources first.
 
 Local proof scope:
 

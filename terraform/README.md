@@ -1,31 +1,34 @@
-# Terraform AWS Scaffold
+# Terraform AWS Infrastructure
 
-This directory is a phase-2 scaffold for the AWS implementation of CloudOps GitOps Platform.
+This directory defines the AWS infrastructure for CloudOps GitOps Platform.
 
-Local proof boundary:
+## Deployment Model
 
-- Keep the module contracts clear.
-- Validate Terraform syntax.
-- Do not spend local GitOps build time debugging AWS provisioning.
+For the portfolio AWS demo, apply `envs/dev` only. The Kubernetes delivery environments remain namespace-isolated inside that single EKS cluster.
 
-AWS deployment phase:
+The `staging` and `prod` Terraform roots validate the reusable module contract, but applying all three would create three separate EKS clusters and is not required for this project story.
 
-- Complete resources for VPC, EKS, ECR, and IAM.
-- Run `terraform plan` with reviewed variables.
-- Apply only when ready to capture EKS/ECR/Argo CD evidence.
-- Destroy cost-bearing resources after screenshots are captured.
+## Cost Boundary
+
+This stack creates cost-bearing AWS resources, including EKS and EC2 worker nodes. Destroy the stack after capturing screenshots if it is not needed:
+
+```bash
+terraform -chdir=terraform/envs/dev destroy
+```
 
 ## Intended Modules
 
-- `modules/vpc`: VPC, subnets, route tables, NAT gateway structure
-- `modules/eks`: EKS cluster, managed node group, add-ons, OIDC provider
+- `modules/vpc`: VPC, public subnets, internet gateway, route table, EKS discovery tags
+- `modules/eks`: EKS cluster, managed node group, cluster IAM role, node IAM role
 - `modules/ecr`: ECR repository for the demo app image
-- `modules/iam`: IRSA and GitHub Actions OIDC roles
+- `modules/iam`: scoped deployment policy for ECR push and EKS cluster inspection
 
 ## Accurate Claim
 
-Until resources are completed and applied, describe this as:
+Before apply:
 
-> EKS-ready Terraform scaffold for VPC, EKS, ECR, and IAM module boundaries.
+> Terraform-defined AWS infrastructure for VPC, EKS, ECR, and IAM.
 
-Do not describe it as provisioned AWS infrastructure until it has been applied and verified.
+After successful apply and screenshots:
+
+> Provisioned an AWS foundation with VPC, EKS, ECR, and IAM using Terraform, then deployed the GitOps workflow to EKS.

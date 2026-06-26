@@ -14,7 +14,7 @@ This project is intentionally different from an application deployment project. 
 - PR-style promotion workflow from `dev` to `staging` to `prod`
 - Drift detection and self-healing after manual cluster changes
 - Failed deployment recovery through Git rollback
-- EKS-ready Terraform scaffold for the later AWS implementation phase
+- Terraform-defined AWS foundation for EKS, ECR, IAM, and VPC networking
 
 ## Architecture
 
@@ -46,7 +46,7 @@ The local proof validates the GitOps mechanics using `kind` or `minikube`:
 4. Promote app versions through Git changes.
 5. Demonstrate drift correction and rollback recovery.
 
-The Terraform directory is a phase-2 AWS scaffold. It defines the intended VPC, EKS, ECR, and IAM module boundaries without turning this local GitOps proof into an AWS provisioning exercise.
+The Terraform directory defines the AWS foundation for the EKS deployment phase. The portfolio AWS demo applies one EKS cluster and keeps `dev`, `staging`, and `prod` isolated as Kubernetes namespaces.
 
 ## Repository Structure
 
@@ -57,7 +57,7 @@ The Terraform directory is a phase-2 AWS scaffold. It defines the intended VPC, 
 ├── environments/                # Environment-specific Helm values
 ├── platform/                    # Namespaces, ResourceQuotas, and RBAC
 ├── argocd/                      # AppProject and Application manifests
-├── terraform/                   # Phase-2 AWS scaffold
+├── terraform/                   # AWS VPC, EKS, ECR, and IAM infrastructure
 ├── docs/                        # Architecture, demos, evidence, tradeoffs
 ├── scripts/                     # Local bootstrap and demo helpers
 └── .github/workflows/           # CI and PR-style promotion workflows
@@ -74,7 +74,7 @@ The local proof is complete. Evidence artifacts are captured under [docs/screens
 - Environment quotas and RBAC visible in Kubernetes
 - Argo CD Applications resolving `$values/environments/.../values.yaml` successfully
 
-Screenshot placeholders live in [docs/screenshots/README.md](docs/screenshots/README.md).
+Screenshot evidence is documented in [docs/screenshots/README.md](docs/screenshots/README.md).
 
 Detailed validation results: [docs/local-validation-results.md](docs/local-validation-results.md)
 
@@ -138,7 +138,7 @@ First live Argo CD test:
 ```bash
 git init
 git add .
-git commit -m "Initial CloudOps GitOps Platform scaffold"
+git commit -m "Initial CloudOps GitOps Platform"
 ./scripts/local-git-server.sh
 GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform PROJECT_ONLY=true ./scripts/local-bootstrap.sh
 GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform APP_ENV=dev ./scripts/local-bootstrap.sh
@@ -158,7 +158,6 @@ Run demos:
 
 Planned AWS hardening and deployment work:
 
-- Complete Terraform modules for VPC, EKS, ECR, and IAM
 - Push app image to Amazon ECR
 - Connect Argo CD to the public GitHub repository
 - Re-run the drift and rollback demos on EKS

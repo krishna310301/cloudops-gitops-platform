@@ -30,7 +30,7 @@ If testing through the local git daemon, initialize and commit the project first
 ```bash
 git init
 git add .
-git commit -m "Initial CloudOps GitOps Platform scaffold"
+git commit -m "Initial CloudOps GitOps Platform"
 ```
 
 The project currently needs to be served as its own repository root because the Argo CD Applications use repo-root paths such as `charts/cloudops-demo-app` and `environments/dev/values.yaml`.
