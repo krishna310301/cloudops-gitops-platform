@@ -21,7 +21,7 @@ folders. Initialize and commit this project before using the local server:
   cd "$PROJECT_ROOT"
   git init
   git add .
-  git commit -m "Initial CloudOps GitOps Platform scaffold"
+  git commit -m "Initial CloudOps GitOps Platform"
 
 If you push this project to GitHub instead, skip this script and set
 GIT_REPO_URL to the GitHub repository URL when running local-bootstrap.sh.
@@ -38,7 +38,7 @@ git daemon needs HEAD to resolve the repository. Create an initial commit first:
 
   cd "$PROJECT_ROOT"
   git add .
-  git commit -m "Initial CloudOps GitOps Platform scaffold"
+  git commit -m "Initial CloudOps GitOps Platform"
 EOF
   exit 1
 fi
@@ -49,6 +49,7 @@ required_paths=(
   "charts/cloudops-demo-app/Chart.yaml"
   "charts/cloudops-demo-app/templates/deployment.yaml"
   "environments/dev/values.yaml"
+  "environments/local/dev/values.yaml"
 )
 
 missing_paths=()

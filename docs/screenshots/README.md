@@ -1,6 +1,6 @@
 # Screenshot Evidence
 
-Captured evidence:
+Captured validation output:
 
 1. `argocd-three-apps-synced.png`
    - Argo CD showing dev, staging, and prod Applications as Synced and Healthy.
@@ -23,12 +23,12 @@ Captured evidence:
 7. `argocd-values-source.png`
    - Argo CD successfully resolving `$values/environments/.../values.yaml` for at least one Application.
 
-Additional evidence:
+Additional validation output:
 
 - `failed-deploy-terminal-evidence.png`
 - `rollback-terminal-evidence.png`
 
-AWS evidence:
+AWS validation output:
 
 1. `aws-terraform-eks-evidence.png`
    - Terraform outputs and live EKS cluster status.
@@ -46,16 +46,16 @@ AWS evidence:
    - Namespace, ResourceQuota, ServiceAccount, Role, and RoleBinding evidence on EKS.
 
 6. `aws-drift-before-outofsync.png`
-   - EKS drift demo showing manual scale to 3 replicas and Argo CD OutOfSync.
+   - EKS drift scenario showing manual scale to 3 replicas and Argo CD OutOfSync.
 
 7. `aws-drift-after-self-heal.png`
-   - EKS drift demo after Argo CD restored the Git-defined replica count.
+   - EKS drift scenario after Argo CD restored the Git-defined replica count.
 
 8. `aws-rollback-failed-degraded.png`
-   - EKS rollback demo showing the bad staging commit and Degraded health.
+   - EKS rollback scenario showing the bad staging commit and Degraded health.
 
 9. `aws-rollback-recovered.png`
-   - EKS rollback demo after Git revert recovery.
+   - EKS rollback scenario after Git revert recovery.
 
 10. `aws-rollback-terminal-evidence.png`
     - Argo CD event history showing Degraded and recovered health transitions.

@@ -17,7 +17,7 @@ resource "aws_ecr_lifecycle_policy" "this" {
     rules = [
       {
         rulePriority = 1
-        description  = "Keep the latest 20 images for portfolio demos"
+        description  = "Keep the latest 20 images for this deployment workflow"
         selection = {
           tagStatus   = "any"
           countType   = "imageCountMoreThan"

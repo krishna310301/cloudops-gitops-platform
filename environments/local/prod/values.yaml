@@ -1,0 +1,20 @@
+replicaCount: 3
+
+image:
+  repository: cloudops-demo-app
+  tag: "0.1.0-prod"
+  pullPolicy: IfNotPresent
+
+environment:
+  name: prod
+
+failureMode:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

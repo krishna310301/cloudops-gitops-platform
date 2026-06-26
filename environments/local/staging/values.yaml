@@ -1,0 +1,20 @@
+replicaCount: 2
+
+image:
+  repository: cloudops-demo-app
+  tag: "0.1.0-staging"
+  pullPolicy: IfNotPresent
+
+environment:
+  name: staging
+
+failureMode:
+  enabled: false
+
+resources:
+  requests:
+    cpu: 75m
+    memory: 96Mi
+  limits:
+    cpu: 300m
+    memory: 384Mi

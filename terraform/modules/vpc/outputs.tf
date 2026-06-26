@@ -4,7 +4,7 @@ output "vpc_id" {
 }
 
 output "public_subnet_ids" {
-  description = "Public subnet IDs used by the cost-conscious EKS demo node group."
+  description = "Public subnet IDs used by the EKS managed node group."
   value       = values(aws_subnet.public)[*].id
 }
 

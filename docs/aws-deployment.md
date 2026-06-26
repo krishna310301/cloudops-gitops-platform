@@ -1,8 +1,8 @@
 # AWS Deployment Path
 
-This project has a local GitOps proof and an AWS deployment path. The AWS path uses one EKS cluster from `terraform/envs/dev`, then keeps `dev`, `staging`, and `prod` separated as Kubernetes namespaces inside that cluster.
+This project has a local GitOps validation path and an AWS deployment path. The AWS path uses one EKS cluster from `terraform/envs/dev`, then keeps `dev`, `staging`, and `prod` separated as Kubernetes namespaces inside that cluster.
 
-That model is intentional for a portfolio build: it proves the EKS/ECR/IAM/VPC workflow without creating three cost-bearing EKS clusters.
+That model validates the EKS/ECR/IAM/VPC workflow without creating three cost-bearing EKS clusters.
 
 ## Preflight
 
@@ -82,11 +82,11 @@ kubectl get pods -n cloudops-prod
 
 ## Evidence to Capture
 
-Captured AWS evidence is recorded in [aws-validation-results.md](aws-validation-results.md) and [screenshots/README.md](screenshots/README.md).
+Captured AWS validation output is recorded in [aws-validation-results.md](aws-validation-results.md) and [screenshots/README.md](screenshots/README.md).
 
 ## Destroy Boundary
 
-EKS and EC2 nodes are cost-bearing. Destroy the stack after capturing evidence unless the cluster is still needed:
+EKS and EC2 nodes are cost-bearing. Destroy the stack unless the cluster is still needed:
 
 ```bash
 terraform -chdir=terraform/envs/dev destroy

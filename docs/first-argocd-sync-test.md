@@ -33,9 +33,9 @@ git add .
 git commit -m "Initial CloudOps GitOps Platform"
 ```
 
-The project currently needs to be served as its own repository root because the Argo CD Applications use repo-root paths such as `charts/cloudops-demo-app` and `environments/dev/values.yaml`.
+The project currently needs to be served as its own repository root because the Argo CD Applications use repo-root paths such as `charts/cloudops-demo-app` and a rendered values root such as `environments/local/dev/values.yaml`.
 
-For a `kind` demo, build and load the local image before syncing:
+For kind/minikube validation, build and load the local image before syncing:
 
 ```bash
 ./scripts/build-load-local-images.sh
@@ -61,6 +61,7 @@ Render the manifests that will be applied:
 
 ```bash
 GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform \
+  VALUES_ROOT=environments/local \
   ./scripts/render-argocd.sh
 ```
 
@@ -78,6 +79,7 @@ Apply only the AppProject and Kubernetes namespace boundaries first:
 
 ```bash
 GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform \
+  VALUES_ROOT=environments/local \
   PROJECT_ONLY=true \
   ./scripts/local-bootstrap.sh
 ```
@@ -95,6 +97,7 @@ Apply only the `dev` Application:
 
 ```bash
 GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform \
+  VALUES_ROOT=environments/local \
   APP_ENV=dev \
   ./scripts/local-bootstrap.sh
 ```
@@ -153,10 +156,12 @@ Apply the remaining Applications:
 
 ```bash
 GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform \
+  VALUES_ROOT=environments/local \
   APP_ENV=staging \
   ./scripts/local-bootstrap.sh
 
 GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform \
+  VALUES_ROOT=environments/local \
   APP_ENV=prod \
   ./scripts/local-bootstrap.sh
 ```

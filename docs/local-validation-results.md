@@ -1,6 +1,6 @@
 # Local Validation Results
 
-This document records the completed local proof for CloudOps GitOps Platform.
+This document records the completed local validation for CloudOps GitOps Platform.
 
 Validation date: June 25, 2026 local time / June 26, 2026 UTC.
 
@@ -10,6 +10,7 @@ Validation date: June 25, 2026 local time / June 26, 2026 UTC.
 - Argo CD: `v3.4.4`
 - Git source: `git://host.docker.internal:9418/cloudops-gitops-platform`
 - Demo app image: local `cloudops-demo-app` image loaded into kind
+- Current local re-run values root: `environments/local`
 
 ## Verified Outcomes
 
@@ -31,7 +32,8 @@ The `dev` Application uses Argo CD multi-source configuration:
 
 - chart source: `charts/cloudops-demo-app`
 - values source ref: `values`
-- values file: `$values/environments/dev/values.yaml`
+- values file at validation time: `$values/environments/dev/values.yaml`
+- current local re-run value file: `$values/environments/local/dev/values.yaml`
 
 The running app returned `environment=dev` and `image_tag=0.1.0-dev`, proving the environment values file was applied.
 
@@ -85,6 +87,7 @@ helm lint charts/cloudops-demo-app -f environments/dev/values.yaml
 helm lint charts/cloudops-demo-app -f environments/staging/values.yaml
 helm lint charts/cloudops-demo-app -f environments/prod/values.yaml
 ./scripts/render-helm.sh
+VALUES_ROOT=environments/local ./scripts/render-helm.sh
 bash -n scripts/*.sh
 terraform -chdir=terraform fmt -check -recursive
 ```

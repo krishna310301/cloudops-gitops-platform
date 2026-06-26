@@ -14,7 +14,7 @@ spec:
       helm:
         releaseName: cloudops-demo-dev
         valueFiles:
-          - $values/environments/dev/values.yaml
+          - $values/VALUES_ROOT_PLACEHOLDER/dev/values.yaml
     - repoURL: REPO_URL_PLACEHOLDER
       targetRevision: HEAD
       ref: values

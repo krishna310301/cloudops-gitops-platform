@@ -2,6 +2,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+VALUES_ROOT="${VALUES_ROOT:-environments}"
 OUT_DIR="$PROJECT_ROOT/tmp/rendered"
 mkdir -p "$OUT_DIR"
 
@@ -13,7 +14,7 @@ fi
 for env in dev staging prod; do
   release="cloudops-demo-$env"
   namespace="cloudops-$env"
-  values="$PROJECT_ROOT/environments/$env/values.yaml"
+  values="$PROJECT_ROOT/$VALUES_ROOT/$env/values.yaml"
   output="$OUT_DIR/$env.yaml"
 
   echo "Rendering $release into $output"

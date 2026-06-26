@@ -1,6 +1,6 @@
 # RBAC And Resource Boundaries
 
-The local project uses namespace isolation, not separate clusters or AWS accounts.
+The project uses namespace isolation, not separate clusters or AWS accounts.
 
 ## Boundaries Implemented
 
@@ -19,11 +19,11 @@ Without quotas, namespace isolation is mostly an organizational boundary. With q
 
 ## Why RBAC Matters
 
-The Role and RoleBinding create an access boundary for environment-scoped changes. This is intentionally minimal for the local build, but it shows the right production habit: environments should not all share one broad access path.
+The Role and RoleBinding create an access boundary for environment-scoped changes. This is intentionally minimal, but it follows a production operating principle: environments should not all share one broad access path.
 
 ## Argo CD Sync Identity Boundary
 
-In the current local build, these `cloudops-*-deployer` ServiceAccounts are not the active Argo CD sync identity. Argo CD syncs through its controller permissions after the Application manifests are applied.
+In the current build, these `cloudops-*-deployer` ServiceAccounts are not the active Argo CD sync identity. Argo CD syncs through its controller permissions after the Application manifests are applied.
 
 That means the RBAC is real, but its current role is to model and enable scoped manual/operator or CI-style namespace access. It should not be described as constraining Argo CD's reconciliation loop yet.
 
@@ -31,19 +31,19 @@ Future hardening option:
 
 - Wire and verify Argo CD per-environment sync impersonation or a reduced-permission cluster credential model.
 - Keep `resource.respectRBAC` and controller discovery behavior in mind if reducing controller permissions.
-- Capture a proof that the `dev`, `staging`, and `prod` Applications can sync only within their intended namespaces.
+- Record validation that the `dev`, `staging`, and `prod` Applications can sync only within their intended namespaces.
 
-## Accurate Resume Language
+## Boundary Language
 
-Use:
+Accurate:
 
 > namespace-isolated dev/staging/prod environments with ResourceQuotas and scoped RBAC boundaries
 
-Do not use:
+Inaccurate:
 
 > fully isolated production environments
 
-unless separate clusters or accounts are implemented later.
+unless separate clusters or accounts are implemented.
 
 Also avoid:
 

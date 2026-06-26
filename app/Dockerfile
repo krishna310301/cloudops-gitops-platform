@@ -7,7 +7,7 @@ ENV PORT=8080
 WORKDIR /app
 COPY src/ /app/src/
 
-RUN adduser --disabled-password --gecos "" appuser
+RUN adduser --disabled-password --gecos "" --uid 1000 appuser
 USER appuser
 
 EXPOSE 8080

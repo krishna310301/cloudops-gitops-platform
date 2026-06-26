@@ -1,4 +1,4 @@
-name: Terraform Scaffold Validate
+name: Terraform Validate
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   validate:
-    name: Validate phase-2 Terraform scaffold
+    name: Validate Terraform configuration
     runs-on: ubuntu-latest
     strategy:
       matrix:

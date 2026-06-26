@@ -40,7 +40,7 @@ flowchart TB
 
 Argo CD provides a visible reconciliation loop, application health model, drift detection, self-healing, and Git revision history. Those are the behaviors this project wants to demonstrate.
 
-Flux would also be a valid GitOps controller. Argo CD is used here because its UI makes drift, health, sync status, and rollback evidence easy to show during interviews and portfolio review.
+Flux would also be a valid GitOps controller. Argo CD is used here because its API and UI make reconciliation, health, sync status, and rollback state straightforward to inspect during operations.
 
 ## Isolation Model
 
@@ -56,6 +56,6 @@ This project uses namespace isolation:
 
 For the local build, Argo CD syncs through the permissions granted to the Argo CD controller. The `cloudops-*-deployer` ServiceAccounts and RoleBindings represent scoped environment access boundaries for manual/operator or CI-style interactions with each namespace.
 
-Do not describe those ServiceAccounts as Argo CD's active sync identity unless a future hardening phase wires and verifies per-environment sync impersonation.
+Those ServiceAccounts are not Argo CD's active sync identity unless per-environment sync impersonation is separately configured and verified.
 
-This does not provide the same blast-radius reduction as separate AWS accounts or separate EKS clusters. That stronger model is a possible future v2.
+This does not provide the same blast-radius reduction as separate AWS accounts or separate EKS clusters.

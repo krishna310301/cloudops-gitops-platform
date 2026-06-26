@@ -23,26 +23,26 @@ This mirrors how platform teams commonly treat promotion:
 5. After review and merge, Argo CD syncs `staging`.
 6. The same process promotes the tag to `prod`.
 
-## Interview-Safe Claim
+## Promotion Boundary
 
-Accurate:
+Accurate behavior:
 
-> Promotion happens through reviewed Git changes to environment-specific Helm values.
+> Promotion happens through Git changes to environment-specific Helm values.
 
-Do not claim automated production deployment with enforced branch protection unless branch protection is configured in GitHub.
+Branch protection is outside the repository configuration. Do not treat promotion as approval-enforced unless the GitHub repository has branch protection enabled.
 
 ## Terraform Boundary
 
-Terraform in this repo defines the AWS implementation. It is kept separate from the local proof so the GitOps workflow can be validated without provisioning cloud resources first.
+Terraform in this repo defines the AWS implementation. It is kept separate from the workload manifests so the GitOps workflow can be validated locally or on EKS.
 
-Local proof scope:
+Local validation scope:
 
 - Keep module directories and variables clear.
 - Include realistic resource boundaries.
-- Avoid spending time debugging AWS provisioning.
+- Avoid requiring cloud resources for the first Argo CD sync test.
 
 AWS deployment scope:
 
 - Complete Terraform resources.
 - Run `terraform plan` and `terraform apply`.
-- Capture EKS/ECR/IAM evidence.
+- Record EKS/ECR/IAM validation output.

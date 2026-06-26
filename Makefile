@@ -3,7 +3,7 @@ SHELL := /usr/bin/env bash
 CLUSTER_NAME ?= cloudops-gitops
 GIT_REPO_URL ?= git://host.docker.internal:9418/cloudops-gitops-platform
 
-.PHONY: test lint render validate aws-preflight build-images load-images install-argocd bootstrap-project bootstrap-dev bootstrap-all
+.PHONY: test lint lint-local render render-local validate aws-preflight build-images load-images install-argocd bootstrap-project bootstrap-dev bootstrap-all
 
 test:
 	python3 -m unittest discover -s app/tests -v
@@ -13,11 +13,20 @@ lint:
 	helm lint charts/cloudops-demo-app -f environments/staging/values.yaml
 	helm lint charts/cloudops-demo-app -f environments/prod/values.yaml
 
+lint-local:
+	helm lint charts/cloudops-demo-app -f environments/local/dev/values.yaml
+	helm lint charts/cloudops-demo-app -f environments/local/staging/values.yaml
+	helm lint charts/cloudops-demo-app -f environments/local/prod/values.yaml
+
 render:
 	./scripts/render-helm.sh
 	./scripts/render-argocd.sh
 
-validate: test lint render
+render-local:
+	VALUES_ROOT=environments/local ./scripts/render-helm.sh
+	VALUES_ROOT=environments/local ./scripts/render-argocd.sh
+
+validate: test lint lint-local render render-local
 	bash -n scripts/*.sh
 	terraform -chdir=terraform fmt -check -recursive
 

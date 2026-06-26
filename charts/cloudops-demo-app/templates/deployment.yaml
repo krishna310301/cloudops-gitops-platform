@@ -13,8 +13,10 @@ spec:
       {{- include "cloudops-demo-app.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      {{- with .Values.podAnnotations }}
       annotations:
-        {{- toYaml .Values.podAnnotations | nindent 8 }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
         {{- include "cloudops-demo-app.selectorLabels" . | nindent 8 }}
         cloudops.io/environment: {{ .Values.environment.name | quote }}

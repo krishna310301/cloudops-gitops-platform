@@ -44,6 +44,6 @@ Manual equivalent:
 - Application recovered: Synced and Healthy
 - `/healthz` returning healthy after recovery
 
-## Interview Talking Point
+## Operational Note
 
 Git rollback is preferred for this project because it preserves the source-of-truth model. Argo CD UI rollback can be useful in emergencies, but if the Git repo still declares the bad state, the system can drift back into failure.

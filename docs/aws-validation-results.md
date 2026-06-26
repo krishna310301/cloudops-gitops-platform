@@ -1,6 +1,6 @@
 # AWS Validation Results
 
-This document records the completed AWS proof for CloudOps GitOps Platform.
+This document records the completed AWS validation for CloudOps GitOps Platform.
 
 Validation date: June 25, 2026 local time / June 26, 2026 UTC.
 
@@ -20,7 +20,7 @@ Validation date: June 25, 2026 local time / June 26, 2026 UTC.
 
 ### Terraform AWS Foundation
 
-Terraform applied the `terraform/envs/dev` root and created 19 AWS resources for the portfolio environment:
+Terraform applied the `terraform/envs/dev` root and created 19 AWS resources for the validation environment:
 
 - VPC, public subnets, internet gateway, route table, and route associations
 - ECR repository with lifecycle policy
@@ -117,16 +117,16 @@ docker buildx build --platform linux/amd64 \
 
 That is documented in the AWS deployment runbook because it is a realistic local-to-EKS issue.
 
-## Current Claim Boundary
+## Current Boundary
 
-Accurate:
+Implemented:
 
 > Provisioned an AWS EKS/ECR/VPC/IAM foundation with Terraform and deployed a GitOps workflow to EKS using Argo CD, Helm, and GitHub as the source of truth.
 
-Accurate:
+Implemented:
 
 > Implemented namespace-isolated `dev`, `staging`, and `prod` delivery environments inside one EKS cluster.
 
-Do not claim:
+Not implemented:
 
 > Three separate EKS clusters, separate AWS accounts, or Argo CD syncing through least-privilege per-environment ServiceAccounts.

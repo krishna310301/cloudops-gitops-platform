@@ -14,7 +14,7 @@ spec:
       helm:
         releaseName: cloudops-demo-staging
         valueFiles:
-          - $values/environments/staging/values.yaml
+          - $values/VALUES_ROOT_PLACEHOLDER/staging/values.yaml
     - repoURL: REPO_URL_PLACEHOLDER
       targetRevision: HEAD
       ref: values

@@ -1,6 +1,6 @@
 # CloudOps GitOps Platform
 
-CloudOps GitOps Platform is a production-style Kubernetes delivery platform that demonstrates Git-based environment promotion, Argo CD sync control, namespace-isolated environments, drift correction, rollback recovery, and an AWS EKS/ECR deployment path.
+CloudOps GitOps Platform is a Kubernetes delivery platform that demonstrates Git-based environment promotion, Argo CD sync control, namespace-isolated environments, drift correction, rollback recovery, and an AWS EKS/ECR deployment path.
 
 This project is intentionally different from an application deployment project. The app is small on purpose. The platform behavior is the point: Git defines desired state, Argo CD reconciles the cluster to that state, and environment changes move through reviewable Git updates.
 
@@ -36,9 +36,14 @@ flowchart LR
 
 More detail: [docs/architecture.md](docs/architecture.md)
 
-## Local-First Scope
+## Deployment Model
 
-The local proof validates the GitOps mechanics using `kind` or `minikube`:
+The repository supports two deployment targets:
+
+- EKS deployment using the default `environments/{dev,staging,prod}` values, which point at ECR images.
+- Local validation using `VALUES_ROOT=environments/local`, which points at kind/minikube-loaded images.
+
+The local validation path checks the GitOps mechanics using `kind` or `minikube`:
 
 1. Install Argo CD.
 2. Apply namespaces, ResourceQuotas, and RBAC.
@@ -46,7 +51,7 @@ The local proof validates the GitOps mechanics using `kind` or `minikube`:
 4. Promote app versions through Git changes.
 5. Demonstrate drift correction and rollback recovery.
 
-The Terraform directory defines and provisions the AWS foundation for the EKS deployment phase. The portfolio AWS demo applies one EKS cluster and keeps `dev`, `staging`, and `prod` isolated as Kubernetes namespaces.
+The Terraform directory defines and provisions the AWS foundation for the EKS deployment. The applied model uses one EKS cluster and keeps `dev`, `staging`, and `prod` isolated as Kubernetes namespaces.
 
 AWS deployment path and permission preflight: [docs/aws-deployment.md](docs/aws-deployment.md)
 
@@ -54,20 +59,20 @@ AWS deployment path and permission preflight: [docs/aws-deployment.md](docs/aws-
 
 ```text
 .
-├── app/                         # Small demo app used to prove delivery behavior
+├── app/                         # Small app used to validate delivery behavior
 ├── charts/cloudops-demo-app/    # Helm chart for the app
 ├── environments/                # Environment-specific Helm values
 ├── platform/                    # Namespaces, ResourceQuotas, and RBAC
 ├── argocd/                      # AppProject and Application manifests
 ├── terraform/                   # AWS VPC, EKS, ECR, and IAM infrastructure
-├── docs/                        # Architecture, demos, evidence, tradeoffs
-├── scripts/                     # Local bootstrap and demo helpers
+├── docs/                        # Architecture, validation records, runbooks, tradeoffs
+├── scripts/                     # Local bootstrap and validation helpers
 └── .github/workflows/           # CI and PR-style promotion workflows
 ```
 
-## Demo Evidence Targets
+## Validation Evidence
 
-The local proof is complete. Evidence artifacts are captured under [docs/screenshots](docs/screenshots).
+Validation artifacts are captured under [docs/screenshots](docs/screenshots).
 
 - Argo CD showing `cloudops-demo-dev`, `cloudops-demo-staging`, and `cloudops-demo-prod` as Synced and Healthy
 - Manual replica drift detected as OutOfSync and reconciled back to Git state
@@ -82,7 +87,7 @@ Detailed validation results: [docs/local-validation-results.md](docs/local-valid
 
 AWS validation results: [docs/aws-validation-results.md](docs/aws-validation-results.md)
 
-Interview guide and claim boundaries: [docs/interview-guide.md](docs/interview-guide.md)
+Engineering notes and boundaries: [docs/engineering-notes.md](docs/engineering-notes.md)
 
 ## Screenshot Gallery
 
@@ -102,15 +107,15 @@ Promotion is PR-style: a workflow opens a pull request that updates the target e
 
 Details: [docs/promotion-workflow.md](docs/promotion-workflow.md)
 
-## Production Claim Boundary
+## Boundary
 
-Accurate claim for the local build:
+Implemented environment model:
 
-> Built a GitOps delivery workflow with namespace-isolated dev/staging/prod environments using Argo CD Applications, Helm values, ResourceQuotas, scoped RBAC, and Git-based promotion.
+> GitOps delivery with namespace-isolated dev/staging/prod environments using Argo CD Applications, Helm values, ResourceQuotas, scoped RBAC, and Git-based promotion.
 
-The scoped RBAC manifests model environment access boundaries for manual/operator or CI-style namespace actions. In the current local build, Argo CD still syncs through its controller permissions. Do not claim Argo CD syncs as the per-environment ServiceAccounts unless that is wired and verified later.
+The scoped RBAC manifests model environment access boundaries for manual/operator or CI-style namespace actions. Argo CD still syncs through its controller permissions.
 
-Do not claim separate AWS accounts, separate EKS clusters, fully isolated cloud environments, or Argo CD per-environment sync impersonation unless those are implemented later.
+This repository does not implement separate AWS accounts, separate EKS clusters, fully isolated cloud environments, or Argo CD per-environment sync impersonation.
 
 ## Commands
 
@@ -136,7 +141,7 @@ Bootstrap a local cluster after creating one with `kind` or `minikube`:
 
 ```bash
 ./scripts/install-argocd.sh
-./scripts/local-bootstrap.sh
+VALUES_ROOT=environments/local ./scripts/local-bootstrap.sh
 ```
 
 First live Argo CD test:
@@ -147,13 +152,13 @@ git add .
 git commit -m "Initial CloudOps GitOps Platform"
 ./scripts/local-git-server.sh
 GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform PROJECT_ONLY=true ./scripts/local-bootstrap.sh
-GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform APP_ENV=dev ./scripts/local-bootstrap.sh
+GIT_REPO_URL=git://host.docker.internal:9418/cloudops-gitops-platform VALUES_ROOT=environments/local APP_ENV=dev ./scripts/local-bootstrap.sh
 argocd app get cloudops-demo-dev
 ```
 
 Detailed checklist: [docs/first-argocd-sync-test.md](docs/first-argocd-sync-test.md)
 
-Run demos:
+Run validation scenarios:
 
 ```bash
 ./scripts/demo-drift.sh dev
@@ -162,10 +167,10 @@ Run demos:
 
 ## AWS Deployment Evidence
 
-AWS deployment completed for the portfolio environment:
+AWS deployment completed for the validation environment:
 
 - Terraform applied the dev AWS root for VPC, EKS, ECR, and IAM
 - App images were pushed to Amazon ECR with `0.1.0-dev`, `0.1.0-staging`, and `0.1.0-prod` tags
 - Argo CD on EKS synced from the public GitHub repository
-- Drift and rollback demos were re-run on EKS
+- Drift and rollback scenarios were re-run on EKS
 - Final Argo CD, Kubernetes, ECR, and AWS evidence screenshots were captured

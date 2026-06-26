@@ -36,6 +36,6 @@ Argo CD should detect that live state no longer matches Git. With self-heal enab
 - Application after self-heal: Synced and Healthy again
 - `kubectl get deployment` showing replicas restored to Git-defined count
 
-## Interview Talking Point
+## Operational Note
 
 Manual cluster changes are treated as drift. Argo CD compares the live Kubernetes object against the rendered Git state and reconciles the difference.
