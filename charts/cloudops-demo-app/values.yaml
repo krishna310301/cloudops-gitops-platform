@@ -1,5 +1,8 @@
 replicaCount: 1
 
+deployment:
+  progressDeadlineSeconds: 60
+
 image:
   repository: cloudops-demo-app
   tag: "0.1.0"
