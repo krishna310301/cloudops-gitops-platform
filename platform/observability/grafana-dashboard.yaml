@@ -1,0 +1,86 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudops-gitops-workloads-dashboard
+  namespace: cloudops-observability
+  labels:
+    grafana_dashboard: "1"
+data:
+  cloudops-gitops-workloads.json: |
+    {
+      "uid": "cloudops-gitops-workloads",
+      "title": "CloudOps GitOps Workloads",
+      "timezone": "browser",
+      "schemaVersion": 39,
+      "version": 1,
+      "refresh": "30s",
+      "tags": ["cloudops", "gitops", "eks"],
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Ready Pods by Environment",
+          "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+          "targets": [
+            {
+              "expr": "sum(kube_pod_status_ready{namespace=~\"cloudops-(dev|staging|prod)\",condition=\"true\"}) by (namespace)",
+              "legendFormat": "{{namespace}}"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "CPU Usage by Environment",
+          "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+          "targets": [
+            {
+              "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=~\"cloudops-(dev|staging|prod)\",container!=\"\",pod!=\"\"}[5m])) by (namespace)",
+              "legendFormat": "{{namespace}}"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Memory Usage by Environment",
+          "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+          "targets": [
+            {
+              "expr": "sum(container_memory_working_set_bytes{namespace=~\"cloudops-(dev|staging|prod)\",container!=\"\",pod!=\"\"}) by (namespace)",
+              "legendFormat": "{{namespace}}"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Available Deployment Replicas",
+          "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+          "targets": [
+            {
+              "expr": "sum(kube_deployment_status_replicas_available{namespace=~\"cloudops-(dev|staging|prod)\"}) by (namespace, deployment)",
+              "legendFormat": "{{namespace}} / {{deployment}}"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Demo App Request Rate",
+          "gridPos": {"x": 0, "y": 16, "w": 12, "h": 8},
+          "targets": [
+            {
+              "expr": "sum(rate(cloudops_demo_requests_total{namespace=~\"cloudops-(dev|staging|prod)\"}[5m])) by (namespace, path, status)",
+              "legendFormat": "{{namespace}} {{path}} {{status}}"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Demo App Health State",
+          "gridPos": {"x": 12, "y": 16, "w": 12, "h": 8},
+          "targets": [
+            {
+              "expr": "min(cloudops_demo_health_state{namespace=~\"cloudops-(dev|staging|prod)\"}) by (namespace)",
+              "legendFormat": "{{namespace}}"
+            }
+          ]
+        }
+      ]
+    }

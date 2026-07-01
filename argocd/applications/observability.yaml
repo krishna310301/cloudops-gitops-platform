@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudops-observability
+  namespace: argocd
+  labels:
+    cloudops.io/environment: observability
+spec:
+  project: cloudops-observability
+  sources:
+    - repoURL: https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      targetRevision: 61.9.0
+      helm:
+        releaseName: cloudops-observability
+        valueFiles:
+          - $values/environments/observability/kube-prometheus-stack-values.yaml
+    - repoURL: REPO_URL_PLACEHOLDER
+      targetRevision: HEAD
+      ref: values
+    - repoURL: REPO_URL_PLACEHOLDER
+      targetRevision: HEAD
+      path: platform/observability
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cloudops-observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ServerSideApply=true
+      - PruneLast=true
+      - ApplyOutOfSyncOnly=true

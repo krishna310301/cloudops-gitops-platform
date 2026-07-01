@@ -26,6 +26,8 @@ spec:
       kind: Deployment
     - group: autoscaling
       kind: HorizontalPodAutoscaler
+    - group: monitoring.coreos.com
+      kind: ServiceMonitor
   roles:
     - name: environment-reader
       description: Read-only access to CloudOps GitOps applications

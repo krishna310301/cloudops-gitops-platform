@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cloudops-observability
+  namespace: argocd
+spec:
+  description: GitOps-managed observability stack for CloudOps platform validation
+  sourceRepos:
+    - https://prometheus-community.github.io/helm-charts
+    - REPO_URL_PLACEHOLDER
+  destinations:
+    - namespace: cloudops-observability
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  roles:
+    - name: observability-reader
+      description: Read-only access to the observability Argo CD application
+      policies:
+        - p, proj:cloudops-observability:observability-reader, applications, get, cloudops-observability/*, allow

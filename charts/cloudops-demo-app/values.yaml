@@ -37,6 +37,12 @@ service:
   port: 80
   targetPort: 8080
 
+serviceMonitor:
+  enabled: false
+  interval: 30s
+  path: /metrics
+  labels: {}
+
 resources:
   requests:
     cpu: 50m

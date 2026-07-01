@@ -54,3 +54,14 @@ module "iam" {
   ecr_repository_arn = module.ecr.repository_arn
   tags               = local.tags
 }
+
+module "budget" {
+  count = var.enable_budget ? 1 : 0
+
+  source                  = "../../modules/budget"
+  name_prefix             = local.name_prefix
+  limit_amount            = var.monthly_budget_limit_usd
+  alert_threshold_percent = var.budget_alert_threshold_percent
+  alert_email             = var.budget_alert_email
+  tags                    = local.tags
+}

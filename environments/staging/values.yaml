@@ -11,6 +11,11 @@ environment:
 failureMode:
   enabled: false
 
+serviceMonitor:
+  enabled: true
+  labels:
+    release: cloudops-observability
+
 resources:
   requests:
     cpu: 75m

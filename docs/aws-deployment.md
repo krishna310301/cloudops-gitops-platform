@@ -18,6 +18,7 @@ The AWS identity must be able to create the foundation resources used by `terraf
 - IAM: cluster role, node role, managed policy attachments, deployment policy, `iam:PassRole`
 - EKS: cluster and managed node group
 - ECR: repository, lifecycle policy, image push permissions
+- Budgets: project budget and optional notification subscriber
 
 If preflight reports denied actions, attach a policy with those permissions or switch to an AWS profile that can create EKS infrastructure.
 
@@ -29,12 +30,23 @@ terraform -chdir=terraform/envs/dev plan -out=tfplan
 terraform -chdir=terraform/envs/dev apply tfplan
 ```
 
+To add an email notification to the AWS Budget without committing the address:
+
+```bash
+terraform -chdir=terraform/envs/dev plan \
+  -var='budget_alert_email=name@example.com' \
+  -out=tfplan
+terraform -chdir=terraform/envs/dev apply tfplan
+```
+
 Expected outputs:
 
 ```bash
 terraform -chdir=terraform/envs/dev output -raw cluster_name
 terraform -chdir=terraform/envs/dev output -raw ecr_repository_url
 terraform -chdir=terraform/envs/dev output -raw kubectl_update_command
+terraform -chdir=terraform/envs/dev output -raw budget_name
+terraform -chdir=terraform/envs/dev output -raw budget_limit_usd
 ```
 
 ## Push Images to ECR
@@ -68,6 +80,12 @@ GIT_REPO_URL=https://github.com/krishna310301/cloudops-gitops-platform.git \
   PROJECT_ONLY=true ./scripts/local-bootstrap.sh
 
 GIT_REPO_URL=https://github.com/krishna310301/cloudops-gitops-platform.git \
+  APP_ENV=observability ./scripts/local-bootstrap.sh
+
+argocd app sync cloudops-observability
+argocd app wait cloudops-observability --health --sync --timeout 600
+
+GIT_REPO_URL=https://github.com/krishna310301/cloudops-gitops-platform.git \
   APP_ENV=all ./scripts/local-bootstrap.sh
 ```
 
@@ -75,10 +93,13 @@ Then verify:
 
 ```bash
 kubectl -n argocd get applications
+kubectl get pods -n cloudops-observability
 kubectl get pods -n cloudops-dev
 kubectl get pods -n cloudops-staging
 kubectl get pods -n cloudops-prod
 ```
+
+The observability sync installs Prometheus Operator CRDs before the app ServiceMonitors are applied. If an app sync starts before those CRDs are ready, sync the app again after `cloudops-observability` is Healthy.
 
 ## Output To Capture
 

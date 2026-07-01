@@ -50,6 +50,11 @@ actions=(
   "ecr:UploadLayerPart"
   "ecr:CompleteLayerUpload"
   "ecr:PutImage"
+  "budgets:CreateBudget"
+  "budgets:ModifyBudget"
+  "budgets:CreateNotification"
+  "budgets:CreateSubscriber"
+  "budgets:TagResource"
 )
 
 tmp_output="$(mktemp)"

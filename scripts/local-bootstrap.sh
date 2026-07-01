@@ -37,13 +37,18 @@ fi
 
 case "$APP_ENV" in
   all)
-    app_files=("$PROJECT_ROOT"/argocd/applications/*.yaml)
+    app_files=(
+      "$PROJECT_ROOT/argocd/applications/observability.yaml"
+      "$PROJECT_ROOT/argocd/applications/dev.yaml"
+      "$PROJECT_ROOT/argocd/applications/staging.yaml"
+      "$PROJECT_ROOT/argocd/applications/prod.yaml"
+    )
     ;;
-  dev|staging|prod)
+  dev|staging|prod|observability)
     app_files=("$PROJECT_ROOT/argocd/applications/$APP_ENV.yaml")
     ;;
   *)
-    echo "APP_ENV must be one of: all, dev, staging, prod" >&2
+    echo "APP_ENV must be one of: all, observability, dev, staging, prod" >&2
     exit 1
     ;;
 esac

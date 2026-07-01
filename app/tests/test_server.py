@@ -5,7 +5,7 @@ import unittest
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 
-from src.server import _truthy, app_metadata
+from src.server import _REQUEST_COUNTS, _truthy, app_metadata, prometheus_metrics, record_request
 
 
 class ServerTest(unittest.TestCase):
@@ -26,6 +26,24 @@ class ServerTest(unittest.TestCase):
             self.assertEqual(metadata["version"], "1.2.3")
             self.assertEqual(metadata["image_tag"], "abc123")
         finally:
+            os.environ.clear()
+            os.environ.update(old_env)
+
+    def test_prometheus_metrics_include_build_and_health_state(self):
+        old_env = dict(os.environ)
+        _REQUEST_COUNTS.clear()
+        try:
+            os.environ["APP_ENV"] = "staging"
+            os.environ["APP_VERSION"] = "0.1.0-staging"
+            os.environ["IMAGE_TAG"] = "0.1.0-staging"
+            os.environ["FAILURE_MODE"] = "true"
+            record_request("GET", "/healthz", 503)
+            metrics = prometheus_metrics()
+            self.assertIn('cloudops_demo_requests_total{method="GET",path="/healthz",status="503"} 1', metrics)
+            self.assertIn('cloudops_demo_health_state{environment="staging"} 0', metrics)
+            self.assertIn('image_tag="0.1.0-staging"', metrics)
+        finally:
+            _REQUEST_COUNTS.clear()
             os.environ.clear()
             os.environ.update(old_env)
 

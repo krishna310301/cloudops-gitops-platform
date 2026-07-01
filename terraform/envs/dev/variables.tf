@@ -28,3 +28,27 @@ variable "github_repository" {
   type        = string
   default     = "krishna310301/cloudops-gitops-platform"
 }
+
+variable "enable_budget" {
+  description = "Create an AWS Budget for the validation environment."
+  type        = bool
+  default     = true
+}
+
+variable "monthly_budget_limit_usd" {
+  description = "Monthly AWS Budget amount for this validation environment."
+  type        = string
+  default     = "25"
+}
+
+variable "budget_alert_threshold_percent" {
+  description = "Forecasted spend percentage that triggers the optional budget alert."
+  type        = number
+  default     = 80
+}
+
+variable "budget_alert_email" {
+  description = "Optional email address for AWS Budget alerts. Leave empty to avoid storing an email address in Terraform variables."
+  type        = string
+  default     = ""
+}

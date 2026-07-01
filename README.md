@@ -7,10 +7,16 @@ CloudOps GitOps Platform runs a GitOps delivery workflow on Kubernetes. It uses 
 
 The app stays small on purpose. The useful part is the delivery path around it: how a version reaches each environment, how Argo CD handles manual drift, and how a bad release gets recovered through Git.
 
+## Project Versions
+
+- `v1.0`: GitOps delivery platform with Argo CD, Helm, EKS, ECR, GitHub Actions, drift correction, and rollback validation.
+- `v1.1`: GitOps-managed Prometheus/Grafana observability and Terraform-managed AWS Budgets for short-lived validation environments.
+
 ## Platform Capabilities
 
 - GitOps delivery with Argo CD as the reconciliation controller
 - Namespace-isolated `dev`, `staging`, and `prod` environments
+- GitOps-managed `observability` namespace for Prometheus and Grafana
 - Resource quotas and scoped RBAC boundaries per environment
 - Helm-based application packaging with environment-specific values
 - Argo CD multi-source Applications so environment values stay outside the chart without path traversal
@@ -18,19 +24,24 @@ The app stays small on purpose. The useful part is the delivery path around it: 
 - Drift detection and self-healing after manual cluster changes
 - Failed deployment recovery through Git rollback
 - Terraform-provisioned AWS foundation for EKS, ECR, IAM, and VPC networking
+- Terraform-managed AWS Budget for validation cost guardrails
 
 ## Current State
 
 The repository includes:
 
 - Demo app with version and health endpoints
+- Demo app Prometheus metrics endpoint
 - Helm chart with probes, resource requests, resource limits, and security context
+- Optional Helm-managed ServiceMonitor for app metrics
 - Argo CD AppProject and multi-source Applications
 - Namespace-scoped `dev`, `staging`, and `prod` environments
+- Argo CD-managed `kube-prometheus-stack` Application for Prometheus and Grafana
+- Grafana dashboard ConfigMap for GitOps workload health
 - ResourceQuotas, Roles, RoleBindings, and ServiceAccounts per environment
 - GitHub Actions workflow for app tests, Helm rendering, Argo CD manifest rendering, image build, and optional ECR push
 - GitHub Actions workflow for PR-style image tag promotion
-- Terraform modules and environment roots for VPC, EKS, ECR, and IAM
+- Terraform modules and environment roots for VPC, EKS, ECR, IAM, and AWS Budgets
 - Local validation path using kind or minikube image loading
 - AWS validation path using EKS, ECR, Argo CD, Helm, and GitHub as the source of truth
 
@@ -54,9 +65,15 @@ flowchart LR
     argocd --> nsdev["dev namespace"]
     argocd --> nsstg["staging namespace"]
     argocd --> nsprod["prod namespace"]
+    argocd --> nsobs["observability namespace"]
     nsdev --> appdev["Demo App"]
     nsstg --> appstg["Demo App"]
     nsprod --> appprod["Demo App"]
+    nsobs --> prom["Prometheus"]
+    nsobs --> graf["Grafana"]
+    prom --> appdev
+    prom --> appstg
+    prom --> appprod
 ```
 
 More detail: [docs/architecture.md](docs/architecture.md)
@@ -81,6 +98,8 @@ Terraform provisions the AWS foundation for the EKS run. The applied model uses 
 AWS deployment path and permission preflight: [docs/aws-deployment.md](docs/aws-deployment.md)
 
 Cost control and cleanup notes: [docs/cost-control.md](docs/cost-control.md)
+
+Observability design and runbook: [docs/observability.md](docs/observability.md)
 
 ## Repository Structure
 
@@ -218,6 +237,7 @@ terraform -chdir=terraform/envs/dev destroy
 - [Engineering Notes](docs/engineering-notes.md)
 - [First Argo CD Sync Test](docs/first-argocd-sync-test.md)
 - [Local Validation Results](docs/local-validation-results.md)
+- [Observability](docs/observability.md)
 - [Promotion Workflow](docs/promotion-workflow.md)
 - [RBAC And Resource Boundaries](docs/rbac-and-resource-boundaries.md)
 - [Rollback Demo](docs/rollback-demo.md)

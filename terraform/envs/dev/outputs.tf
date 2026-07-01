@@ -27,3 +27,13 @@ output "kubectl_update_command" {
   description = "Command to configure kubectl for this EKS cluster."
   value       = "aws eks update-kubeconfig --region ${var.aws_region} --name ${module.eks.cluster_name}"
 }
+
+output "budget_name" {
+  description = "AWS Budget name for the validation environment."
+  value       = var.enable_budget ? module.budget[0].budget_name : null
+}
+
+output "budget_limit_usd" {
+  description = "Monthly AWS Budget limit in USD."
+  value       = var.enable_budget ? module.budget[0].budget_limit_usd : null
+}
