@@ -59,3 +59,26 @@ AWS run:
 
 10. `aws-rollback-terminal-output.png`
     - Argo CD event history showing Degraded and recovered health transitions.
+
+AWS v1.1 run:
+
+1. `aws-v1-1-argocd-four-apps-synced.png`
+   - Argo CD showing dev, staging, prod, and observability Applications as Synced and Healthy.
+
+2. `aws-v1-1-kubernetes-observability-validation.png`
+   - EKS nodes, observability pods, app pods, and app ServiceMonitors.
+
+3. `aws-v1-1-prometheus-app-targets.png`
+   - Prometheus target page showing app ServiceMonitor targets as Up.
+
+4. `aws-v1-1-grafana-workload-dashboard.png`
+   - Grafana dashboard for workload health, CPU, memory, replicas, request rate, and app health.
+
+5. `aws-v1-1-app-metrics-validation.png`
+   - Demo app `/metrics` output and Prometheus query output across dev, staging, and prod.
+
+6. `aws-v1-1-aws-budget-ecr-validation.png`
+   - Terraform outputs, ECR image tags, and AWS Budget output.
+
+7. `aws-v1-1-destroy-validation.png`
+   - Terraform destroy completion, empty state, and AWS not-found checks after teardown.

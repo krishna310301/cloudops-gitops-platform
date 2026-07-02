@@ -98,12 +98,20 @@ kubectl -n cloudops-observability port-forward svc/cloudops-observability-grafan
 
 For a short validation run, use the chart-created admin credentials from the Grafana secret. For any long-running environment, replace this with an external secret flow instead of storing credentials in Git.
 
-## Validation Output To Capture
+## Validation Output
 
-Capture these after the v1.1 AWS run:
+Captured during the v1.1 AWS run:
 
 - Argo CD showing `cloudops-observability` as Synced and Healthy
 - Prometheus targets showing app ServiceMonitor targets
 - Grafana dashboard with dev/staging/prod workload data
 - `/metrics` output from one app pod or service
 - Terraform output showing the AWS Budget name and limit
+
+Screenshots:
+
+- [Argo CD four apps synced](screenshots/aws-v1-1-argocd-four-apps-synced.png)
+- [Prometheus app targets](screenshots/aws-v1-1-prometheus-app-targets.png)
+- [Grafana workload dashboard](screenshots/aws-v1-1-grafana-workload-dashboard.png)
+- [App metrics validation](screenshots/aws-v1-1-app-metrics-validation.png)
+- [AWS Budget and ECR validation](screenshots/aws-v1-1-aws-budget-ecr-validation.png)

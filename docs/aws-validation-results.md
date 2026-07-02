@@ -4,6 +4,8 @@ AWS validation ran after the local GitOps loop worked. The run used one EKS clus
 
 Validation date: June 25, 2026 local time / June 26, 2026 UTC.
 
+v1.1 validation date: July 1, 2026 local time / July 2, 2026 UTC.
+
 ## Runtime
 
 - AWS account: `196750375574`
@@ -15,22 +17,28 @@ Validation date: June 25, 2026 local time / June 26, 2026 UTC.
 - ECR repository: `196750375574.dkr.ecr.us-east-2.amazonaws.com/cloudops-gitops-dev-demo-app`
 - Git source: `https://github.com/krishna310301/cloudops-gitops-platform.git`
 - Argo CD: `v3.4.4`
+- AWS Budget: `cloudops-gitops-dev-monthly-budget`, `$25` monthly limit
 
 ## Verified Outcomes
 
 ### Terraform AWS Foundation
 
-Terraform applied the `terraform/envs/dev` root and created 19 AWS resources for the validation environment:
+Terraform applied the `terraform/envs/dev` root and created 20 AWS resources for the v1.1 validation environment:
 
 - VPC, public subnets, internet gateway, route table, and route associations
 - ECR repository with lifecycle policy
 - EKS control plane and managed node group
 - EKS cluster role, node role, managed policy attachments, and deployment policy
 - EKS control-plane security group
+- AWS Budget for the short-lived validation environment
 
 Output:
 
 ![AWS Terraform and EKS validation output](screenshots/aws-terraform-eks-validation.png)
+
+v1.1 output:
+
+![AWS v1.1 foundation, ECR tags, and budget](screenshots/aws-v1-1-aws-budget-ecr-validation.png)
 
 ### ECR Image Publishing
 
@@ -57,6 +65,39 @@ Output:
 ![AWS Argo CD apps synced](screenshots/aws-argocd-three-apps-synced.png)
 
 ![AWS EKS workloads validation output](screenshots/aws-eks-workloads-validation.png)
+
+For v1.1, Argo CD also synced the observability stack. All four Applications reached `Synced` and `Healthy`:
+
+- `cloudops-demo-dev`
+- `cloudops-demo-staging`
+- `cloudops-demo-prod`
+- `cloudops-observability`
+
+Output:
+
+![AWS v1.1 Argo CD four apps synced](screenshots/aws-v1-1-argocd-four-apps-synced.png)
+
+![AWS v1.1 Kubernetes observability validation](screenshots/aws-v1-1-kubernetes-observability-validation.png)
+
+### GitOps-Managed Observability On EKS
+
+The v1.1 run deployed `kube-prometheus-stack` through Argo CD into `cloudops-observability`.
+
+Validated:
+
+- Prometheus, Grafana, kube-state-metrics, and node-exporter pods running
+- App ServiceMonitors created in `cloudops-dev`, `cloudops-staging`, and `cloudops-prod`
+- Prometheus scraping app `/metrics` targets
+- Grafana dashboard showing dev/staging/prod workload health, CPU, memory, replicas, request rate, and app health
+- Demo app metrics showing healthy state across all three environments
+
+Output:
+
+![AWS v1.1 Prometheus app targets](screenshots/aws-v1-1-prometheus-app-targets.png)
+
+![AWS v1.1 Grafana workload dashboard](screenshots/aws-v1-1-grafana-workload-dashboard.png)
+
+![AWS v1.1 app metrics validation](screenshots/aws-v1-1-app-metrics-validation.png)
 
 ### Namespace Boundaries On EKS
 
@@ -97,6 +138,24 @@ Output:
 
 ![AWS rollback terminal output](screenshots/aws-rollback-terminal-output.png)
 
+### Cost Guardrail And Teardown
+
+The v1.1 run included an AWS Budget for the short-lived validation environment. After validation, Terraform destroyed all 20 managed resources.
+
+Independent cleanup checks confirmed:
+
+- Terraform state was empty
+- EKS cluster lookup returned `ResourceNotFoundException`
+- ECR repository lookup returned `RepositoryNotFoundException`
+- AWS Budget lookup returned `NotFoundException`
+- Project tag sweep returned no resources
+
+During teardown, AWS left one unattached Kubernetes ENI from a terminated worker node and one EKS-created cluster security group. Both were verified, removed, and Terraform then completed VPC deletion.
+
+Output:
+
+![AWS v1.1 destroy validation](screenshots/aws-v1-1-destroy-validation.png)
+
 ## Important Implementation Note
 
 The first ECR push from a local Apple Silicon machine produced an ARM image manifest. EKS nodes were AMD64, so pods failed with:
@@ -126,6 +185,10 @@ Implemented:
 Implemented:
 
 > Implemented namespace-isolated `dev`, `staging`, and `prod` delivery environments inside one EKS cluster.
+
+Implemented in v1.1:
+
+> Extended the platform with Argo CD-managed Prometheus/Grafana observability and a Terraform-managed AWS Budget for the short-lived validation environment.
 
 Not implemented:
 

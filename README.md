@@ -51,6 +51,8 @@ Validated scenarios:
 - Drift detection and self-healing after a manual replica change
 - Failed deployment recovery through Git revert
 - EKS/ECR deployment validation with screenshots and terminal output
+- Argo CD-managed Prometheus/Grafana observability on EKS
+- Terraform-managed AWS Budget validation
 
 ## Architecture
 
@@ -126,6 +128,10 @@ Screenshots and terminal captures live under [docs/screenshots](docs/screenshots
 - Git rollback restoring the last healthy version
 - Environment quotas and RBAC visible in Kubernetes
 - Argo CD Applications resolving `$values/environments/.../values.yaml`
+- Prometheus scraping app ServiceMonitor targets across dev/staging/prod
+- Grafana dashboard showing workload health and app metrics
+- AWS Budget output for the short-lived validation environment
+- Terraform destroy and AWS not-found checks after validation teardown
 
 The screenshot index is in [docs/screenshots/README.md](docs/screenshots/README.md).
 
@@ -146,6 +152,12 @@ Engineering notes and boundaries: [docs/engineering-notes.md](docs/engineering-n
 ![Rollback recovered](docs/screenshots/rollback-recovered.png)
 
 ![AWS Argo CD apps synced](docs/screenshots/aws-argocd-three-apps-synced.png)
+
+![AWS v1.1 Prometheus app targets](docs/screenshots/aws-v1-1-prometheus-app-targets.png)
+
+![AWS v1.1 Grafana workload dashboard](docs/screenshots/aws-v1-1-grafana-workload-dashboard.png)
+
+![AWS v1.1 destroy validation](docs/screenshots/aws-v1-1-destroy-validation.png)
 
 ## Promotion Model
 
