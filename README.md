@@ -3,7 +3,7 @@
 [![Build and Push Demo App](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/build-and-push.yml/badge.svg)](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/build-and-push.yml)
 [![Terraform Validate](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/terraform-validate.yml/badge.svg)](https://github.com/krishna310301/cloudops-gitops-platform/actions/workflows/terraform-validate.yml)
 
-CloudOps GitOps Platform runs a GitOps delivery workflow on Kubernetes. It uses Argo CD, Helm, GitHub Actions, Terraform, ECR, and EKS to move a small app through `dev`, `staging`, and `prod` while Git stays the source of truth.
+CloudOps GitOps Platform is an EKS GitOps delivery platform. It uses Argo CD, Helm, GitHub Actions, Terraform, ECR, and EKS to move a small app through `dev`, `staging`, and `prod` while Git stays the source of truth.
 
 The app stays small on purpose. The useful part is the delivery path around it: how a version reaches each environment, how Argo CD handles manual drift, and how a bad release gets recovered through Git.
 
@@ -118,7 +118,7 @@ Observability design and runbook: [docs/observability.md](docs/observability.md)
 └── .github/workflows/           # CI and PR-style promotion workflows
 ```
 
-## Validation Output
+## Run Results
 
 Screenshots and terminal captures live under [docs/screenshots](docs/screenshots).
 
