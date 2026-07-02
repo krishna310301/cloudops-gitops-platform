@@ -10,7 +10,7 @@ The app stays small on purpose. The useful part is the delivery path around it: 
 ## Project Versions
 
 - `v1.0`: GitOps delivery platform with Argo CD, Helm, EKS, ECR, GitHub Actions, drift correction, and rollback validation.
-- `v1.1`: GitOps-managed Prometheus/Grafana observability and Terraform-managed AWS Budgets for short-lived validation environments.
+- `v1.1`: GitOps-managed Prometheus/Grafana observability and Terraform-managed AWS Budgets for cost-controlled validation environments.
 
 ## Platform Capabilities
 
@@ -130,8 +130,8 @@ Screenshots and terminal captures live under [docs/screenshots](docs/screenshots
 - Argo CD Applications resolving `$values/environments/.../values.yaml`
 - Prometheus scraping app ServiceMonitor targets across dev/staging/prod
 - Grafana dashboard showing workload health and app metrics
-- AWS Budget output for the short-lived validation environment
-- Terraform destroy and AWS not-found checks after validation teardown
+- AWS Budget output for the validation environment
+- Terraform destroy output, empty state, AWS resource checks, and project tag sweep after teardown
 
 The screenshot index is in [docs/screenshots/README.md](docs/screenshots/README.md).
 
@@ -139,7 +139,7 @@ Detailed validation results: [docs/local-validation-results.md](docs/local-valid
 
 AWS validation results: [docs/aws-validation-results.md](docs/aws-validation-results.md)
 
-Engineering notes and boundaries: [docs/engineering-notes.md](docs/engineering-notes.md)
+Engineering notes: [docs/engineering-notes.md](docs/engineering-notes.md)
 
 ## Screenshot Gallery
 
@@ -165,15 +165,13 @@ Promotion is PR-style: a workflow opens a pull request that updates the target e
 
 Details: [docs/promotion-workflow.md](docs/promotion-workflow.md)
 
-## Boundary
+## Environment Model
 
-Implemented environment model:
+The applied environment model uses one EKS cluster with namespace-scoped `dev`, `staging`, and `prod` environments.
 
-> GitOps delivery with namespace-isolated dev/staging/prod environments using Argo CD Applications, Helm values, ResourceQuotas, scoped RBAC, and Git-based promotion.
+Each environment has its own Argo CD Application, Helm values file, ResourceQuota, ServiceAccount, Role, and RoleBinding. Argo CD owns reconciliation for the deployed workloads, while the scoped RBAC manifests define the namespace access model used for manual/operator or CI-style actions.
 
-The scoped RBAC manifests model environment access boundaries for manual/operator or CI-style namespace actions. Argo CD still syncs through its controller permissions.
-
-This repository does not implement separate AWS accounts, separate EKS clusters, fully isolated cloud environments, or Argo CD per-environment sync impersonation.
+This keeps the project focused on GitOps delivery mechanics: promotion through Git, drift correction, rollback through Git, workload observability, and Terraform-managed infrastructure lifecycle.
 
 ## Commands
 
@@ -227,11 +225,11 @@ Run validation scenarios:
 
 The AWS run used one EKS cluster and the public GitHub repository:
 
-- Terraform applied the dev AWS root for VPC, EKS, ECR, and IAM
+- Terraform applied the dev AWS root for VPC, EKS, ECR, IAM, and AWS Budgets
 - App images were pushed to Amazon ECR with `0.1.0-dev`, `0.1.0-staging`, and `0.1.0-prod` tags
 - Argo CD on EKS synced from the public GitHub repository
 - Drift and rollback scenarios were re-run on EKS
-- Argo CD, Kubernetes, ECR, and AWS screenshots were captured after the run
+- Argo CD, Kubernetes, ECR, AWS Budget, Prometheus, Grafana, and teardown evidence were captured after the run
 
 The AWS path uses cost-bearing resources. Keep the environment running only while it is needed for validation, and destroy it through Terraform when finished:
 
