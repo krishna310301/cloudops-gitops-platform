@@ -47,6 +47,8 @@ The Argo CD Application uses multiple sources:
 
 The app chart exposes a ServiceMonitor only when `serviceMonitor.enabled=true`. The AWS environment values enable it because the v1.1 path includes Prometheus Operator CRDs. Local values leave it disabled so local app validation can run without the observability stack.
 
+The EKS validation values disable kube-system control-plane scrape stubs for CoreDNS, kube-proxy, etcd, scheduler, and controller-manager. Those endpoints are not the focus of this project, and keeping them off lets the observability AppProject stay scoped to the observability namespace.
+
 ## Install Order
 
 For a clean cluster, apply the platform boundaries and sync observability before syncing the app environments:
